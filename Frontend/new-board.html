@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nueva Pizarra — Colabo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles/new-board.css" />
 </head>
+
 <body>
 
   <div class="page-wrap">
     <!-- BACK -->
     <a href="dashboard.html" class="back-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7" />
+      </svg>
       Mis pizarras
     </a>
 
@@ -48,11 +54,8 @@
           <!-- NOMBRE -->
           <div class="field-group">
             <label class="field-label" for="boardName">Nombre de la pizarra</label>
-            <input
-              type="text" id="boardName" name="boardName"
-              class="field-input" placeholder="Ej: Sprint Junio, Proyecto Alpha…"
-              maxlength="50" autocomplete="off"
-            />
+            <input type="text" id="boardName" name="boardName" class="field-input"
+              placeholder="Ej: Sprint Junio, Proyecto Alpha…" maxlength="50" autocomplete="off" />
             <div class="field-hint"><span id="nameCount">0</span>/50</div>
           </div>
 
@@ -60,14 +63,22 @@
           <div class="field-group">
             <label class="field-label">Tema de color</label>
             <div class="color-picker" id="colorPicker">
-              <button type="button" class="color-opt active" data-color="#6366f1" data-name="Índigo" style="--c:#6366f1"></button>
-              <button type="button" class="color-opt" data-color="#8b5cf6" data-name="Violeta" style="--c:#8b5cf6"></button>
-              <button type="button" class="color-opt" data-color="#ec4899" data-name="Rosa" style="--c:#ec4899"></button>
-              <button type="button" class="color-opt" data-color="#f59e0b" data-name="Ámbar" style="--c:#f59e0b"></button>
-              <button type="button" class="color-opt" data-color="#10b981" data-name="Esmeralda" style="--c:#10b981"></button>
-              <button type="button" class="color-opt" data-color="#06b6d4" data-name="Cian" style="--c:#06b6d4"></button>
-              <button type="button" class="color-opt" data-color="#f97316" data-name="Naranja" style="--c:#f97316"></button>
-              <button type="button" class="color-opt" data-color="#64748b" data-name="Pizarra" style="--c:#64748b"></button>
+              <button type="button" class="color-opt active" data-color="#6366f1" data-name="Índigo"
+                style="--c:#6366f1"></button>
+              <button type="button" class="color-opt" data-color="#8b5cf6" data-name="Violeta"
+                style="--c:#8b5cf6"></button>
+              <button type="button" class="color-opt" data-color="#ec4899" data-name="Rosa"
+                style="--c:#ec4899"></button>
+              <button type="button" class="color-opt" data-color="#f59e0b" data-name="Ámbar"
+                style="--c:#f59e0b"></button>
+              <button type="button" class="color-opt" data-color="#10b981" data-name="Esmeralda"
+                style="--c:#10b981"></button>
+              <button type="button" class="color-opt" data-color="#06b6d4" data-name="Cian"
+                style="--c:#06b6d4"></button>
+              <button type="button" class="color-opt" data-color="#f97316" data-name="Naranja"
+                style="--c:#f97316"></button>
+              <button type="button" class="color-opt" data-color="#64748b" data-name="Pizarra"
+                style="--c:#64748b"></button>
             </div>
             <div class="color-name" id="colorName">Índigo</div>
           </div>
@@ -97,11 +108,13 @@
                 Kanban básico
                 <span>3 columnas</span>
               </button>
-              <button type="button" class="preset-btn" data-cols='["Backlog","Por hacer","En progreso","En revisión","Listo"]'>
+              <button type="button" class="preset-btn"
+                data-cols='["Backlog","Por hacer","En progreso","En revisión","Listo"]'>
                 Scrum completo
                 <span>5 columnas</span>
               </button>
-              <button type="button" class="preset-btn" data-cols='["Ideas","Seleccionadas","Diseño","Desarrollo","Publicado"]'>
+              <button type="button" class="preset-btn"
+                data-cols='["Ideas","Seleccionadas","Diseño","Desarrollo","Publicado"]'>
                 Flujo creativo
                 <span>5 columnas</span>
               </button>
@@ -128,20 +141,23 @@
               </button>
             </div>
             <div class="password-field" id="passwordField" style="display:none">
-              <input
-                type="password" id="boardPassword"
-                class="field-input" placeholder="Contraseña de acceso"
-                autocomplete="new-password"
-              />
+              <input type="password" id="boardPassword" class="field-input" placeholder="Contraseña de acceso"
+                autocomplete="new-password" />
               <button type="button" class="pw-toggle" id="pwToggle">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
               </button>
             </div>
           </div>
 
           <button type="submit" class="btn-create" id="createBtn">
             <span>Crear pizarra</span>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </button>
 
         </form>
@@ -158,7 +174,10 @@
       <div class="share-link-box">
         <span id="shareLink" class="share-link-text"></span>
         <button class="copy-btn" id="copyBtn" onclick="copyLink()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
           Copiar
         </button>
       </div>
@@ -169,7 +188,117 @@
     </div>
   </div>
 
-  <script src="../js/storage.js"></script>
-  <script src="../js/new-board.js"></script>
+  <script>
+    // Lógica para que funcionen los botones de colores, emojis y opciones
+    document.querySelectorAll('.color-opt').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.color-opt').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        document.getElementById('colorName').innerText = e.currentTarget.getAttribute('data-name');
+        document.getElementById('previewCard').style.borderTop = "4px solid " + e.currentTarget.getAttribute('data-color');
+      });
+    });
+
+    document.querySelectorAll('.emoji-opt').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.emoji-opt').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+      });
+    });
+
+    const nameInput = document.getElementById('boardName');
+    nameInput.addEventListener('input', (e) => {
+      document.getElementById('nameCount').innerText = e.target.value.length;
+      document.getElementById('previewName').innerText = e.target.value || 'Mi nueva pizarra';
+    });
+
+    // Lógica Privacidad / Contraseña
+    const btnPublic = document.getElementById('accessPublic');
+    const btnPrivate = document.getElementById('accessPrivate');
+    const pwField = document.getElementById('passwordField');
+    const pwInput = document.getElementById('boardPassword');
+    const pwToggle = document.getElementById('pwToggle');
+
+    btnPublic.addEventListener('click', () => {
+      btnPublic.classList.add('active');
+      btnPrivate.classList.remove('active');
+      pwField.style.display = 'none';
+      pwInput.value = '';
+    });
+
+    btnPrivate.addEventListener('click', () => {
+      btnPrivate.classList.add('active');
+      btnPublic.classList.remove('active');
+      pwField.style.display = 'block';
+      setTimeout(() => pwInput.focus(), 50);
+    });
+
+    pwToggle.addEventListener('click', () => {
+      if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+      } else {
+        pwInput.type = 'password';
+      }
+    });
+
+    // Lógica principal de guardado
+    document.getElementById('newBoardForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('boardName').value.trim() || 'Mi nueva pizarra';
+      const colorBtn = document.querySelector('.color-opt.active');
+      const color = colorBtn ? colorBtn.getAttribute('data-color') : '#6366f1';
+
+      const emojiBtn = document.querySelector('.emoji-opt.active');
+      const emoji = emojiBtn ? emojiBtn.getAttribute('data-emoji') : '🚀';
+
+      const colsBtn = document.querySelector('.preset-btn.active');
+      const colsStr = colsBtn ? colsBtn.getAttribute('data-cols') : '["Por hacer","En progreso","Listo"]';
+
+      const isPrivate = document.getElementById('accessPrivate').classList.contains('active');
+      const password = isPrivate ? document.getElementById('boardPassword').value : '';
+
+      // Crear base de la pizarra
+      const newBoard = {
+        id: 'board_' + Date.now(),
+        name: name,
+        color: color,
+        emoji: emoji,
+        cols: JSON.parse(colsStr),
+        date: new Date().toLocaleDateString()
+      };
+
+      // Guardar en LocalStorage
+      let boards = JSON.parse(localStorage.getItem('colabo_boards') || '[]');
+      boards.push(newBoard);
+      localStorage.setItem('colabo_boards', JSON.stringify(boards));
+
+      // Mostrar éxito
+      const successOverlay = document.getElementById('successOverlay');
+      if (successOverlay) {
+        successOverlay.style.display = 'flex';
+        document.getElementById('shareLink').innerText = 'colabo.app/b/' + newBoard.id.substring(6);
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    document.getElementById('goToBoardBtn').addEventListener('click', function () {
+      // Redirigir siempre al dashboard o a la pizarra si tuviéramos lógica de ID allí
+      window.location.href = 'dashboard.html';
+    });
+
+    function copyLink() {
+      alert("¡Enlace copiado al portapapeles! Ahora puedes enviarlo por WhatsApp o correo.");
+    }
+  </script>
 </body>
+
 </html>

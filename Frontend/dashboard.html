@@ -1,35 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mis Pizarras — Colabo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles/dashboard.css" />
 </head>
+
 <body>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
-      <a href="../index.html" class="logo">
+      <a href="index.html" class="logo">
         <span class="logo-mark">◈</span>
         <span class="logo-text">colabo</span>
       </a>
     </div>
     <nav class="sidebar-nav">
       <a href="dashboard.html" class="snav-item active">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          <rect x="14" y="14" width="7" height="7" rx="1.5" />
+        </svg>
         Mis pizarras
       </a>
       <a href="new-board.html" class="snav-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8" stroke-linecap="round"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v8M8 12h8" stroke-linecap="round" />
+        </svg>
         Nueva pizarra
       </a>
       <a href="join.html" class="snav-item">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </svg>
         Unirme
       </a>
     </nav>
@@ -53,11 +69,17 @@
       </div>
       <div class="topbar-actions">
         <a href="join.html" class="btn-outline">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
           Unirme con link
         </a>
         <a href="new-board.html" class="btn-primary">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
           Nueva pizarra
         </a>
       </div>
@@ -92,7 +114,83 @@
     </div>
   </div>
 
-  <script src="../js/storage.js"></script>
-  <script src="../js/dashboard.js"></script>
+  <script>
+    function loadBoards() {
+      const grid = document.getElementById('boardsGrid');
+      if (!grid) return;
+
+      let boards = JSON.parse(localStorage.getItem('colabo_boards') || '[]');
+
+      // Conservar siempre la tarjeta de "Nueva pizarra"
+      const newCardHtml = `
+        <a href="new-board.html" class="board-card new-card">
+          <div class="new-card-inner">
+            <div class="new-icon">+</div>
+            <span>Nueva pizarra</span>
+          </div>
+        </a>
+      `;
+      grid.innerHTML = '';
+
+      // Mostrar primero los más recientes
+      boards.slice().reverse().forEach(b => {
+        // Fallbacks por si algún dato está en blanco
+        const color = b.color || '#6366f1';
+        const emoji = b.emoji || '🚀';
+        const name = b.name || 'Pizarra sin nombre';
+        const date = b.date || 'Hoy';
+
+        const isPrivate = b.password && b.password.length > 0;
+        const hrefAction = isPrivate ? '#' : `board.html?id=${b.id}`;
+        const onClickAction = isPrivate ? `onclick="event.preventDefault(); promptPassword('${b.id}', '${b.password}')"` : '';
+        const lockIcon = isPrivate ? `<span style="position:absolute; top:12px; left:12px; background:#fff; border-radius:50%; padding:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1); display:flex; font-size:12px;" title="Privado">🔒</span>` : '';
+
+        const cardHtml = `
+        <a href="${hrefAction}" ${onClickAction} class="board-card board-saved" style="border-top: 4px solid ${color}; position:relative; display:flex; flex-direction:column; justify-content:space-between; text-decoration:none; color:inherit;">
+          ${lockIcon}
+          <div>
+            <div style="font-size: 32px; margin-bottom: 12px; background: ${color}15; width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:12px;">${emoji}</div>
+            <h3 style="margin:0; font-size: 18px; color: #111827; font-weight:600;">${name}</h3>
+            <p style="margin:6px 0 0 0; font-size: 13px; color: #6b7280;">Creado: ${date}</p>
+          </div>
+          <button onclick="deleteBoard(event, '${b.id}')" style="position:absolute; top:12px; right:12px; background:#fee2e2; border:none; cursor:pointer; color:#ef4444; width:30px; height:30px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:14px; transition:all 0.2s;" class="del-btn" title="Eliminar pizarra">🗑️</button>
+        </a>
+        `;
+        grid.insertAdjacentHTML('beforeend', cardHtml);
+      });
+
+      // Estilos CSS inyectados para el hover del botón eliminar
+      if (!document.getElementById('dashHoverStyles')) {
+        document.head.insertAdjacentHTML('beforeend', '<style id="dashHoverStyles">.board-saved:hover .del-btn {display:flex !important;}</style>');
+      }
+
+      grid.insertAdjacentHTML('beforeend', newCardHtml);
+    }
+
+    // Función especial que captura el evento para que no navegue al hacer clic en borrar
+    window.deleteBoard = function (e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (confirm('¿Estás SEGURO que quieres eliminar esta pizarra para siempre?')) {
+        let boards = JSON.parse(localStorage.getItem('colabo_boards') || '[]');
+        boards = boards.filter(b => b.id !== id);
+        localStorage.setItem('colabo_boards', JSON.stringify(boards));
+        loadBoards();
+      }
+    };
+
+    // Función para solicitar contraseña al querer abrir la pizarra
+    window.promptPassword = function (id, correctPw) {
+      const userInput = prompt("🔒 Esta pizarra está protegida.\nPor favor, ingresa la contraseña para acceder:");
+      if (userInput === correctPw) {
+        window.location.href = 'board.html?id=' + id;
+      } else if (userInput !== null) {
+        alert("❌ Contraseña incorrecta. Acceso denegado.");
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', loadBoards);
+  </script>
 </body>
+
 </html>

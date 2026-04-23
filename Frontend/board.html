@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pizarra — Colabo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="styles/board.css" />
 </head>
+
 <body>
 
   <!-- TOPBAR -->
   <header class="board-header" id="boardHeader">
     <div class="header-left">
       <a href="dashboard.html" class="header-back">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7" />
+        </svg>
       </a>
       <div class="header-title-wrap">
         <span class="board-emoji" id="boardEmoji">🚀</span>
@@ -33,11 +39,22 @@
     </div>
     <div class="header-right">
       <button class="hbtn" id="addNoteBtn" title="Añadir nota">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="12" y1="18" x2="12" y2="12" />
+          <line x1="9" y1="15" x2="15" y2="15" />
+        </svg>
         Nota
       </button>
       <button class="hbtn hbtn-accent" id="shareBoardBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
         Compartir
       </button>
     </div>
@@ -46,10 +63,50 @@
   <!-- BOARD -->
   <div class="board-wrap" id="boardWrap">
     <div class="board-canvas" id="boardCanvas">
-      <!-- Columns injected by board.js -->
+      <!-- Mock Columns for Frontend Demo -->
+      <div class="column" id="col-todo">
+        <div class="col-header">
+          <span class="col-dot" style="background:#6366f1"></span>
+          <h3 class="col-title">Por hacer</h3>
+          <span class="col-count" id="count-todo">0</span>
+        </div>
+        <div class="col-cards" id="cards-todo" style="min-height: 100px;">
+        </div>
+        <button class="add-card-btn" onclick="openCardModal('cards-todo')">
+          + Añadir tarjeta
+        </button>
+      </div>
+
+      <div class="column" id="col-prog">
+        <div class="col-header">
+          <span class="col-dot" style="background:#f59e0b"></span>
+          <h3 class="col-title">En progreso</h3>
+          <span class="col-count" id="count-prog">0</span>
+        </div>
+        <div class="col-cards" id="cards-prog" style="min-height: 100px;">
+        </div>
+        <button class="add-card-btn" onclick="openCardModal('cards-prog')">
+          + Añadir tarjeta
+        </button>
+      </div>
+
+      <div class="column" id="col-done">
+        <div class="col-header">
+          <span class="col-dot" style="background:#10b981"></span>
+          <h3 class="col-title">Listo</h3>
+          <span class="col-count" id="count-done">0</span>
+        </div>
+        <div class="col-cards" id="cards-done" style="min-height: 100px;">
+        </div>
+        <button class="add-card-btn" onclick="openCardModal('cards-done')">
+          + Añadir tarjeta
+        </button>
+      </div>
     </div>
     <button class="add-col-btn" id="addColBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+      </svg>
       Añadir columna
     </button>
   </div>
@@ -65,7 +122,10 @@
       <div class="modal-header">
         <h3 id="cardModalTitle">Nueva tarjeta</h3>
         <button class="modal-close" onclick="closeCardModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
       <div class="modal-body">
@@ -117,7 +177,10 @@
           <label class="mlabel">Color de tarjeta</label>
           <div class="card-colors" id="cardColorPicker">
             <button type="button" class="cc active" data-color="" style="background:var(--surface)">
-              <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5"/></svg>
+              <svg width="10" height="10" viewBox="0 0 10 10">
+                <line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" />
+                <line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5" />
+              </svg>
             </button>
             <button type="button" class="cc" data-color="#6366f120" style="background:#6366f1;opacity:0.6"></button>
             <button type="button" class="cc" data-color="#8b5cf620" style="background:#8b5cf6;opacity:0.6"></button>
@@ -130,7 +193,10 @@
       </div>
       <div class="modal-footer">
         <button class="mfooter-del" id="deleteCardBtn" style="display:none" onclick="deleteCurrentCard()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>
           Eliminar
         </button>
         <div class="mfooter-right">
@@ -147,7 +213,10 @@
       <div class="modal-header">
         <h3>Compartir pizarra</h3>
         <button class="modal-close" onclick="closeShareModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
       <div class="modal-body">
@@ -177,7 +246,10 @@
       <div class="modal-header">
         <h3>Nueva nota</h3>
         <button class="modal-close" onclick="closeNoteModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
       <div class="modal-body">
@@ -200,12 +272,351 @@
     </div>
   </div>
 
+  <!-- MUSIC WIDGET (LOFI) -->
+  <div id="musicWidget"
+    style="position: fixed; bottom: 20px; right: 20px; z-index: 999; background: var(--surface, #fff); border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); padding: 10px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border, #e5e7eb); transition: transform 0.2s; cursor:pointer;"
+    onclick="toggleSpotify(event)">
+    <div style="font-size: 24px; padding: 4px; background: #6366f120; border-radius: 8px;">🎧</div>
+    <div style="display:flex; flex-direction:column; justify-content:center; user-select:none; padding-right:8px;">
+      <span style="font-size: 13px; font-weight:600; color: #4f46e5;">Modo Concentración</span>
+      <span style="font-size: 11px; color: #6b7280; font-family:'DM Sans';">Lofi & Chill Beats</span>
+    </div>
+  </div>
+
+  <div id="spotifyEmbedPlayer"
+    style="display:none; position: fixed; bottom: 85px; right: 20px; z-index: 1000; box-shadow: 0 15px 30px rgba(0,0,0,0.2); border-radius: 12px;">
+    <iframe style="border-radius:12px"
+      src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4FyS8kM?utm_source=generator&theme=0" width="300"
+      height="80" frameBorder="0" allowfullscreen=""
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+
+  <script>
+    function toggleSpotify(e) {
+      if (e.target.tagName.toLowerCase() === 'iframe') return;
+      const player = document.getElementById('spotifyEmbedPlayer');
+      const widget = document.getElementById('musicWidget');
+      if (player.style.display === 'none') {
+        player.style.display = 'block';
+        widget.style.border = '2px solid #4f46e5';
+      } else {
+        player.style.display = 'none';
+        widget.style.border = '1px solid var(--border, #e5e7eb)';
+      }
+    }
+  </script>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <script src="../js/storage.js"></script>
-  <script src="../js/drag.js"></script>
-  <script src="../js/notes.js"></script>
-  <script src="../js/board.js"></script>
+  <script>
+    let currentTargetColumn = null;
+    let draggedElement = null;
+
+    const cardModal = document.getElementById('cardModal');
+    const titleInput = document.getElementById('cardTitle');
+    const descInput = document.getElementById('cardDesc');
+    const priorityInput = document.getElementById('cardPriority');
+    const tagInput = document.getElementById('cardTag');
+    const assignInput = document.getElementById('cardAssignee');
+    const progressInput = document.getElementById('cardProgress');
+    const progressVal = document.getElementById('progressVal');
+
+    // Sincronizar el texto del slider
+    progressInput.addEventListener('input', (e) => {
+      progressVal.innerText = e.target.value + '%';
+    });
+
+    let selectedCardColor = "";
+    document.querySelectorAll('#cardColorPicker .cc').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#cardColorPicker .cc').forEach(b => b.classList.remove('active'));
+        const target = e.currentTarget;
+        target.classList.add('active');
+        selectedCardColor = target.getAttribute('data-color');
+      });
+    });
+
+    function openCardModal(colId) {
+      currentTargetColumn = colId;
+      cardModal.style.display = 'flex';
+      titleInput.focus();
+    }
+
+    function closeCardModal() {
+      cardModal.style.display = 'none';
+      titleInput.value = '';
+      descInput.value = '';
+      priorityInput.value = 'none';
+      tagInput.value = '';
+      assignInput.value = '';
+
+      const defaultBtn = document.querySelector('#cardColorPicker .cc');
+      if (defaultBtn) {
+        document.querySelectorAll('#cardColorPicker .cc').forEach(b => b.classList.remove('active'));
+        defaultBtn.classList.add('active');
+        selectedCardColor = "";
+      }
+    }
+
+    function saveCard() {
+      const title = titleInput.value.trim();
+      if (!title) {
+        alert("¡Ponle un título a tu tarjeta!");
+        return;
+      }
+
+      const priority = priorityInput.value;
+      const tag = tagInput.value;
+      const assign = assignInput.value || "YO";
+      const desc = descInput.value.trim();
+      const progress = progressInput.value;
+
+      let priorityHtml = '';
+      if (priority !== 'none') {
+        const pLabels = { 'low': 'Baja', 'med': 'Media', 'high': 'Alta', 'urgent': 'Urgente' };
+        const pColors = { 'low': '#10b981', 'med': '#f59e0b', 'high': '#f87171', 'urgent': '#ef4444' };
+        priorityHtml = `<span class="priority-badge" style="color:${pColors[priority]}; font-size:12px; font-weight:600; padding:2px 6px; border-radius:4px; background:${pColors[priority]}20;">${pLabels[priority]}</span>`;
+      }
+
+      let tagHtml = '';
+      if (tag !== "") {
+        tagHtml = `<div class="card-labels" style="margin-bottom:8px;"><span class="label" style="background:#6366f120;color:#818cf8; font-size:11px; padding:2px 6px; border-radius:4px;">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span></div>`;
+      }
+
+      let descHtml = '';
+      if (desc) {
+        descHtml = `<p style="font-size:12px; color:#6b7280; font-family:'DM Sans'; margin:4px 0 8px 0; line-height:1.4;">${desc}</p>`;
+      }
+
+      let progressHtml = '';
+      if (progress > 0) {
+        progressHtml = `
+          <div style="width:100%; display:flex; align-items:center; gap:6px; margin-top:8px;">
+            <div style="flex-grow:1; background:#e5e7eb; height:6px; border-radius:3px; overflow:hidden;">
+              <div style="width:${progress}%; background:${progress == 100 ? '#10b981' : '#6366f1'}; height:100%; transition: width 0.3s;"></div>
+            </div>
+            <span style="font-size:10px; color:#6b7280; font-weight:bold;">${progress}%</span>
+          </div>`;
+      }
+
+      const cardId = 'card_' + Date.now();
+      let bgColorStyle = selectedCardColor ? `background-color: ${selectedCardColor}; opacity:0.95;` : 'background: var(--surface);';
+
+      const cardHtml = `
+        <div class="card" id="${cardId}" draggable="true" ondragstart="drag(event)" style="${bgColorStyle} cursor: grab; padding:12px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:10px; border:1px solid var(--border);">
+          ${tagHtml}
+          <p class="card-title" style="margin:0 0 4px 0; font-size:14px; font-weight:500;">${title}</p>
+          ${descHtml}
+          ${progressHtml}
+          <div class="card-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+            ${priorityHtml}
+            <div class="card-avatars" style="display:flex; gap: 4px;">
+              <div class="cv" style="width:24px;height:24px;border-radius:50%;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;">${assign.substring(0, 2).toUpperCase()}</div>
+            </div>
+          </div>
+          <button style="position:absolute; top:8px; right:8px; background:none; border:none; color:#a1a1aa; cursor:pointer; display:none;" class="delete-card-hover" onclick="this.parentElement.remove(); updateCounts();" title="Eliminar tarjeta">✖</button>
+        </div>
+      `;
+      // Estilos en vivo para mostrar botón borrar al pasar el ratón (hover)
+      if (!document.getElementById('cardHoverStyles')) {
+        document.head.insertAdjacentHTML('beforeend', '<style id="cardHoverStyles">.card {position:relative;} .card:hover .delete-card-hover {display:block !important;}</style>');
+      }
+
+      const targetCol = document.getElementById(currentTargetColumn);
+      if (targetCol) {
+        targetCol.insertAdjacentHTML('beforeend', cardHtml);
+      }
+
+      updateCounts();
+      closeCardModal();
+    }
+
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+      draggedElement = ev.target;
+      setTimeout(() => { ev.target.style.opacity = '0.4'; }, 0);
+    }
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drop(ev) {
+      ev.preventDefault();
+      const data = ev.dataTransfer.getData("text");
+      const card = document.getElementById(data);
+      if (card) {
+        card.style.opacity = '1';
+
+        let dropTarget = ev.target;
+        while (dropTarget && !dropTarget.classList.contains('col-cards')) {
+          dropTarget = dropTarget.parentElement;
+        }
+
+        if (dropTarget && dropTarget.classList.contains('col-cards')) {
+          dropTarget.appendChild(card);
+          updateCounts();
+        }
+      }
+      draggedElement = null;
+    }
+
+    document.addEventListener('dragend', (e) => {
+      if (draggedElement) draggedElement.style.opacity = '1';
+    });
+
+    function updateCounts() {
+      const t = document.getElementById('cards-todo');
+      if (t) document.getElementById('count-todo').innerText = t.children.length;
+
+      const p = document.getElementById('cards-prog');
+      if (p) document.getElementById('count-prog').innerText = p.children.length;
+
+      const d = document.getElementById('cards-done');
+      if (d) document.getElementById('count-done').innerText = d.children.length;
+    }
+
+    document.querySelectorAll('.col-cards').forEach(col => {
+      col.addEventListener('dragover', allowDrop);
+      col.addEventListener('drop', drop);
+    });
+
+    function closeShareModal() {
+      const sm = document.getElementById('shareModal');
+      if (sm) sm.style.display = 'none';
+    }
+
+    const sBtn = document.getElementById('shareBoardBtn');
+    if (sBtn) sBtn.onclick = function () {
+      document.getElementById('shareModal').style.display = 'flex';
+    }
+
+    // Lógica para las Notas (Post-its)
+    document.querySelectorAll('.note-colors .nc').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.note-colors .nc').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+      });
+    });
+
+    document.getElementById('addNoteBtn').onclick = () => {
+      document.getElementById('noteModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('noteText').focus(), 10);
+    };
+
+    function closeNoteModal() {
+      document.getElementById('noteModal').style.display = 'none';
+      document.getElementById('noteText').value = '';
+    }
+
+    function createNote() {
+      const text = document.getElementById('noteText').value.trim();
+      if (!text) {
+        alert('Por favor escribe algo en tu nota');
+        return;
+      }
+
+      const activeBtn = document.querySelector('.note-colors .nc.active');
+      const color = activeBtn ? activeBtn.getAttribute('data-color') : '#fef3c7';
+
+      const noteId = 'note_' + Date.now();
+
+      // Coordenadas iniciales ligeramente aleatorias
+      const startX = Math.floor(Math.random() * 200) + 100;
+      const startY = Math.floor(Math.random() * 200) + 100;
+
+      const noteHtml = `
+        <div class="sticky-note" id="${noteId}" style="background:${color}; padding: 16px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); width: 220px; position: absolute; left: ${startX}px; top: ${startY}px; cursor: move; z-index: 100;">
+          <div class="note-drag-handle" style="width: 100%; height: 15px; position:absolute; top:0; left:0;"></div>
+          <p style="margin:8px 0 10px 0; font-size: 15px; color: #1f2937; white-space: pre-wrap; font-family: 'DM Sans', sans-serif;">${text}</p>
+          <button style="position:absolute; top: 6px; right: 6px; background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 14px;" onclick="this.parentElement.remove()" title="Eliminar nota">✖</button>
+        </div>
+      `;
+
+      document.getElementById('notesLayer').insertAdjacentHTML('beforeend', noteHtml);
+      closeNoteModal();
+
+      // Añadir la lógica para arrastrar arrastre libre (drag free)
+      makeElementDraggable(document.getElementById(noteId));
+    }
+
+    // Controlador para arrastrar libremente por la pantalla (Post-its)
+    function makeElementDraggable(elmnt) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      elmnt.onmousedown = dragMouseDown;
+
+      function dragMouseDown(e) {
+        e = e || window.event;
+        // Prevenir que el clic en el botón de cerrar active el arrastre
+        if (e.target.tagName.toLowerCase() === 'button') return;
+
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+
+        // Traer al frente
+        document.querySelectorAll('.sticky-note').forEach(n => n.style.zIndex = "100");
+        elmnt.style.zIndex = "101";
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+
+    // Lógica para expandir el tablero (Añadir Columnas)
+    document.getElementById('addColBtn').onclick = () => {
+      const colName = prompt("¿Qué nombre quieres ponerle a la nueva columna?");
+      if (!colName) return;
+
+      const colId = 'col-' + Date.now();
+      const cardsId = 'cards-' + Date.now();
+
+      // Escoger un color aleatorio para el puntito
+      const colors = ['#8b5cf6', '#ec4899', '#06b6d4', '#f59e0b', '#10b981'];
+      const dotColor = colors[Math.floor(Math.random() * colors.length)];
+
+      const colHtml = `
+      <div class="column" id="${colId}">
+        <div class="col-header">
+          <span class="col-dot" style="background:${dotColor}"></span>
+          <h3 class="col-title">${colName}</h3>
+          <span class="col-count" id="count-${cardsId}">0</span>
+        </div>
+        <div class="col-cards" id="${cardsId}" style="min-height: 100px;">
+        </div>
+        <button class="add-card-btn" onclick="openCardModal('${cardsId}')">
+          + Añadir tarjeta
+        </button>
+      </div>
+      `;
+
+      // Insertarlo antes del botón de añadir columna
+      document.getElementById('addColBtn').insertAdjacentHTML('beforebegin', colHtml);
+
+      // Hacer que la nueva columna acepte Drag & Drop
+      const newColCards = document.getElementById(cardsId);
+      newColCards.addEventListener('dragover', allowDrop);
+      newColCards.addEventListener('drop', drop);
+    };
+
+    updateCounts();
+  </script>
 </body>
+
 </html>
