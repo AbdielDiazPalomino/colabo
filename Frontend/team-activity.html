@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actividad del equipo — Colabo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles/team-activity.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+            <a href="index.html" class="logo">
+                <span class="logo-mark">◈</span>
+                <span class="logo-text">colabo</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="snav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                Mis pizarras
+            </a>
+            <a href="board.html" class="snav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="9" y1="3" x2="9" y2="21" />
+                    <line x1="15" y1="3" x2="15" y2="21" />
+                </svg>
+                Pizarra actual
+            </a>
+            <a href="team-activity.html" class="snav-item active">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+                Actividad
+            </a>
+            <a href="team-stats.html" class="snav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                Estadísticas
+            </a>
+            <a href="calendario.html" class="snav-item" id="navCalendar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                Calendario
+            </a>
+            <a href="perfil-usuario.html" class="snav-item" id="navProfile">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                Mi perfil
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="user-chip">
+                <div class="user-avatar">YO</div>
+                <div class="user-info">
+                    <span class="user-name">Invitado</span>
+                    <span class="user-sub">Sin cuenta</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <div class="topbar">
+            <div>
+                <h1 class="page-title">Actividad del equipo</h1>
+                <p class="page-sub">Todo lo que ocurre en tu pizarra, en tiempo real</p>
+            </div>
+            <div class="topbar-actions">
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    En vivo
+                </div>
+                <button class="btn-outline" id="refreshBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16" />
+                    </svg>
+                    Actualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">Toda la actividad</button>
+                <button class="filter-btn" data-filter="cards">Tarjetas</button>
+                <button class="filter-btn" data-filter="comments">Comentarios</button>
+                <button class="filter-btn" data-filter="likes">Likes</button>
+                <button class="filter-btn" data-filter="columns">Columnas</button>
+            </div>
+            <div class="filter-right">
+                <button class="filter-icon" id="clearActivityBtn" title="Limpiar actividad">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ACTIVITY TIMELINE -->
+        <div class="activity-timeline" id="activityTimeline">
+            <!-- Actividad de hoy -->
+            <div class="activity-group">
+                <div class="group-date">
+                    <span class="date-badge">Hoy</span>
+                    <span class="date-line"></span>
+                </div>
+                <div class="activity-list" id="todayActivities">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Actividad de ayer -->
+            <div class="activity-group" id="yesterdayGroup" style="display:none">
+                <div class="group-date">
+                    <span class="date-badge">Ayer</span>
+                    <span class="date-line"></span>
+                </div>
+                <div class="activity-list" id="yesterdayActivities"></div>
+            </div>
+
+            <!-- Actividad de esta semana -->
+            <div class="activity-group" id="thisWeekGroup" style="display:none">
+                <div class="group-date">
+                    <span class="date-badge">Esta semana</span>
+                    <span class="date-line"></span>
+                </div>
+                <div class="activity-list" id="weekActivities"></div>
+            </div>
+
+            <!-- Actividad más antigua -->
+            <div class="activity-group" id="olderGroup" style="display:none">
+                <div class="group-date">
+                    <span class="date-badge">Anterior</span>
+                    <span class="date-line"></span>
+                </div>
+                <div class="activity-list" id="olderActivities"></div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-activity" id="emptyActivity" style="display:none">
+                <div class="empty-icon">📭</div>
+                <h3>Sin actividad reciente</h3>
+                <p>Cuando alguien mueva una tarjeta, comente o dé like, aparecerá aquí.</p>
+            </div>
+        </div>
+
+        <!-- MIEMBROS CONECTADOS -->
+        <div class="online-section">
+            <div class="section-header">
+                <h2 class="section-label">Conectados ahora</h2>
+                <span class="online-count" id="onlineCount">0 conectados</span>
+            </div>
+            <div class="members-grid" id="membersGrid">
+                <!-- Injected by JS -->
+                <div class="member-card">
+                    <div class="member-avatar" style="background:#6366f1">YO</div>
+                    <div class="member-info">
+                        <span class="member-name">Tú</span>
+                        <span class="member-status">activo ahora</span>
+                    </div>
+                    <div class="member-dot online"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/team-activity.js"></script>
+</body>
+
+</html>
