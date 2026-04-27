@@ -54,14 +54,18 @@
   </header>
 
   <!-- BOARD -->
-  <div class="board-wrap" id="boardWrap">
-    <div class="board-canvas" id="boardCanvas">
-      <!-- Columns injected by board.js -->
-    </div>
+  <div class="board-wrap" id="boardWrap" 
+      style="display: flex; flex-direction: column;"
+    >
     <button class="add-col-btn" id="addColBtn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
       Añadir columna
     </button>
+
+    <div class="board-canvas" id="boardCanvas" style="display: flex; gap:15px;">
+      <!-- Columns injected by board.js -->
+    </div>
+    
   </div>
 
   <!-- FLOATING NOTES LAYER -->
