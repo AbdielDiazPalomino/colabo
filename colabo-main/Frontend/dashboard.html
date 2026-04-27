@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis Pizarras — Colabo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/dashboard.css" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">◈</span>
+        <span class="logo-text">colabo</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="snav-item active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Mis pizarras
+      </a>
+      <a href="new-board.html" class="snav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8" stroke-linecap="round"/></svg>
+        Nueva pizarra
+      </a>
+      <a href="join.html" class="snav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Unirme
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="user-avatar">YO</div>
+        <div class="user-info">
+          <span class="user-name">Invitado</span>
+          <span class="user-sub">Sin cuenta</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 class="page-title">Mis pizarras</h1>
+        <p class="page-sub">Aquí viven tus espacios de trabajo</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="join.html" class="btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Unirme con link
+        </a>
+        <a href="new-board.html" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          Nueva pizarra
+        </a>
+      </div>
+    </div>
+
+    <!-- RECENT -->
+    <section class="boards-section">
+      <div class="section-header">
+        <h2 class="section-label">Recientes</h2>
+      </div>
+      <div class="boards-grid" id="boardsGrid">
+        <!-- Boards are injected by JS -->
+        <a href="board.html" class="board-card new-card">
+          <div class="new-card-inner">
+            <div class="new-icon">+</div>
+            <span>Nueva pizarra</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: DELETE CONFIRM -->
+  <div class="modal-overlay" id="deleteModal" style="display:none">
+    <div class="modal">
+      <h3>¿Eliminar pizarra?</h3>
+      <p>Esta acción no se puede deshacer. Se eliminarán todas las tarjetas y notas.</p>
+      <div class="modal-actions">
+        <button class="btn-outline" onclick="closeDeleteModal()">Cancelar</button>
+        <button class="btn-danger" onclick="confirmDelete()">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>
