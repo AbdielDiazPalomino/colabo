@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nueva Pizarra — Colabo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/new-board.css" />
+</head>
+<body>
+
+  <div class="page-wrap">
+    <!-- BACK -->
+    <a href="dashboard.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Mis pizarras
+    </a>
+
+    <div class="form-container">
+      <div class="form-left">
+        <div class="form-badge">Nueva pizarra</div>
+        <h1 class="form-title">Crea tu<br /><em>espacio</em></h1>
+        <p class="form-sub">Configura tu pizarra en segundos. Después podrás compartirla con un link.</p>
+
+        <!-- PREVIEW LIVE -->
+        <div class="board-preview-card" id="previewCard">
+          <div class="preview-thumb" id="previewThumb">
+            <div class="preview-thumb-mini">
+              <div class="mini-cols">
+                <div class="mc"></div>
+                <div class="mc"></div>
+                <div class="mc"></div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-info">
+            <div class="preview-name" id="previewName">Mi nueva pizarra</div>
+            <div class="preview-meta">0 tarjetas · Ahora mismo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-right">
+        <form id="newBoardForm" novalidate>
+
+          <!-- NOMBRE -->
+          <div class="field-group">
+            <label class="field-label" for="boardName">Nombre de la pizarra</label>
+            <input
+              type="text" id="boardName" name="boardName"
+              class="field-input" placeholder="Ej: Sprint Junio, Proyecto Alpha…"
+              maxlength="50" autocomplete="off"
+            />
+            <div class="field-hint"><span id="nameCount">0</span>/50</div>
+          </div>
+
+          <!-- COLOR THEME -->
+          <div class="field-group">
+            <label class="field-label">Tema de color</label>
+            <div class="color-picker" id="colorPicker">
+              <button type="button" class="color-opt active" data-color="#6366f1" data-name="Índigo" style="--c:#6366f1"></button>
+              <button type="button" class="color-opt" data-color="#8b5cf6" data-name="Violeta" style="--c:#8b5cf6"></button>
+              <button type="button" class="color-opt" data-color="#ec4899" data-name="Rosa" style="--c:#ec4899"></button>
+              <button type="button" class="color-opt" data-color="#f59e0b" data-name="Ámbar" style="--c:#f59e0b"></button>
+              <button type="button" class="color-opt" data-color="#10b981" data-name="Esmeralda" style="--c:#10b981"></button>
+              <button type="button" class="color-opt" data-color="#06b6d4" data-name="Cian" style="--c:#06b6d4"></button>
+              <button type="button" class="color-opt" data-color="#f97316" data-name="Naranja" style="--c:#f97316"></button>
+              <button type="button" class="color-opt" data-color="#64748b" data-name="Pizarra" style="--c:#64748b"></button>
+            </div>
+            <div class="color-name" id="colorName">Índigo</div>
+          </div>
+
+          <!-- EMOJI -->
+          <div class="field-group">
+            <label class="field-label">Emoji (opcional)</label>
+            <div class="emoji-picker">
+              <button type="button" class="emoji-opt active" data-emoji="🚀">🚀</button>
+              <button type="button" class="emoji-opt" data-emoji="⚡">⚡</button>
+              <button type="button" class="emoji-opt" data-emoji="🎯">🎯</button>
+              <button type="button" class="emoji-opt" data-emoji="💡">💡</button>
+              <button type="button" class="emoji-opt" data-emoji="🔥">🔥</button>
+              <button type="button" class="emoji-opt" data-emoji="🌊">🌊</button>
+              <button type="button" class="emoji-opt" data-emoji="🎨">🎨</button>
+              <button type="button" class="emoji-opt" data-emoji="📋">📋</button>
+              <button type="button" class="emoji-opt" data-emoji="✨">✨</button>
+              <button type="button" class="emoji-opt" data-emoji="🏆">🏆</button>
+            </div>
+          </div>
+
+          <!-- COLUMNAS -->
+          <div class="field-group">
+            <label class="field-label">Columnas iniciales</label>
+            <div class="columns-preset" id="columnsPreset">
+              <button type="button" class="preset-btn active" data-cols='["Por hacer","En progreso","Listo"]'>
+                Kanban básico
+                <span>3 columnas</span>
+              </button>
+              <button type="button" class="preset-btn" data-cols='["Backlog","Por hacer","En progreso","En revisión","Listo"]'>
+                Scrum completo
+                <span>5 columnas</span>
+              </button>
+              <button type="button" class="preset-btn" data-cols='["Ideas","Seleccionadas","Diseño","Desarrollo","Publicado"]'>
+                Flujo creativo
+                <span>5 columnas</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- PRIVACIDAD -->
+          <div class="field-group">
+            <label class="field-label">Acceso</label>
+            <div class="access-toggle">
+              <button type="button" class="access-opt active" id="accessPublic">
+                <span class="access-icon">🌐</span>
+                <div>
+                  <strong>Público</strong>
+                  <span>Cualquiera con el link puede entrar</span>
+                </div>
+              </button>
+              <button type="button" class="access-opt" id="accessPrivate">
+                <span class="access-icon">🔒</span>
+                <div>
+                  <strong>Con contraseña</strong>
+                  <span>Protege tu pizarra</span>
+                </div>
+              </button>
+            </div>
+            <div class="password-field" id="passwordField" style="display:none">
+              <input
+                type="password" id="boardPassword"
+                class="field-input" placeholder="Contraseña de acceso"
+                autocomplete="new-password"
+              />
+              <button type="button" class="pw-toggle" id="pwToggle">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-create" id="createBtn">
+            <span>Crear pizarra</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS OVERLAY -->
+  <div class="success-overlay" id="successOverlay" style="display:none">
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <h2>¡Pizarra creada!</h2>
+      <p>Comparte este link con tu equipo</p>
+      <div class="share-link-box">
+        <span id="shareLink" class="share-link-text"></span>
+        <button class="copy-btn" id="copyBtn" onclick="copyLink()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+      <div class="success-actions">
+        <button class="btn-outline" onclick="window.location.href='dashboard.html'">Ir al dashboard</button>
+        <button class="btn-primary" id="goToBoardBtn">Abrir pizarra →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/new-board.js"></script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizarra — Colabo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/board.css" />
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="board-header" id="boardHeader">
+    <div class="header-left">
+      <a href="dashboard.html" class="header-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </a>
+      <div class="header-title-wrap">
+        <span class="board-emoji" id="boardEmoji">🚀</span>
+        <h1 class="board-title" id="boardTitle" contenteditable="true" spellcheck="false">Mi Pizarra</h1>
+      </div>
+    </div>
+    <div class="header-center">
+      <!-- Online avatars -->
+      <div class="online-users" id="onlineUsers">
+        <div class="online-avatar" style="background:#6366f1" title="Tú">YO</div>
+        <div class="online-avatar" style="background:#ec4899" title="Ana M.">AM</div>
+        <div class="online-avatar" style="background:#10b981" title="Carlos S.">CS</div>
+        <div class="online-count">+2</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a href="team-activity.html">
+      <button class="hbtn" id="activityBtn" title="Actividad del equipo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/> </svg>
+        Actividad
+      </button></a>
+      <a href="team-stats.html">
+      <button class="hbtn" id="activityBtn" title="Actividad del equipo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/> </svg>
+        Estadísticas
+      </button></a>
+      <button class="hbtn" id="addNoteBtn" title="Añadir nota">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Nota
+      </button>
+      <button class="hbtn hbtn-accent" id="shareBoardBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Compartir
+      </button>
+    </div>
+  </header>
+
+  <!-- BOARD -->
+  <div class="board-wrap" id="boardWrap">
+    <div class="board-canvas" id="boardCanvas">
+      <!-- Columns injected by board.js -->
+    </div>
+    <button class="add-col-btn" id="addColBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      Añadir columna
+    </button>
+  </div>
+
+  <!-- FLOATING NOTES LAYER -->
+  <div class="notes-layer" id="notesLayer">
+    <!-- Sticky notes injected by notes.js -->
+  </div>
+
+  <!-- MODAL: ADD/EDIT CARD -->
+  <div class="modal-overlay" id="cardModal" style="display:none">
+    <div class="card-modal">
+      <div class="modal-header">
+        <h3 id="cardModalTitle">Nueva tarjeta</h3>
+        <button class="modal-close" onclick="closeCardModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="mfield">
+          <label class="mlabel">Título</label>
+          <input type="text" id="cardTitle" class="minput" placeholder="¿Qué hay que hacer?" />
+        </div>
+        <div class="mfield">
+          <label class="mlabel">Descripción</label>
+          <textarea id="cardDesc" class="minput mtextarea" placeholder="Detalles adicionales…" rows="3"></textarea>
+        </div>
+        <div class="mfield-row">
+          <div class="mfield">
+            <label class="mlabel">Prioridad</label>
+            <select id="cardPriority" class="minput mselect">
+              <option value="none">Sin prioridad</option>
+              <option value="low">Baja</option>
+              <option value="med">Media</option>
+              <option value="high">Alta</option>
+              <option value="urgent">Urgente</option>
+            </select>
+          </div>
+          <div class="mfield">
+            <label class="mlabel">Etiqueta</label>
+            <select id="cardTag" class="minput mselect">
+              <option value="">Sin etiqueta</option>
+              <option value="diseño">Diseño</option>
+              <option value="dev">Desarrollo</option>
+              <option value="revisión">Revisión</option>
+              <option value="deploy">Deploy</option>
+              <option value="docs">Docs</option>
+              <option value="bug">Bug</option>
+              <option value="idea">Idea</option>
+            </select>
+          </div>
+        </div>
+        <div class="mfield">
+          <label class="mlabel">Asignado a</label>
+          <input type="text" id="cardAssignee" class="minput" placeholder="Nombre o iniciales" maxlength="20" />
+        </div>
+        <div class="mfield">
+          <label class="mlabel">Progreso</label>
+          <div class="progress-wrap">
+            <input type="range" id="cardProgress" min="0" max="100" value="0" class="progress-slider" />
+            <span id="progressVal">0%</span>
+          </div>
+        </div>
+        <div class="mfield">
+          <label class="mlabel">Color de tarjeta</label>
+          <div class="card-colors" id="cardColorPicker">
+            <button type="button" class="cc active" data-color="" style="background:var(--surface)">
+              <svg width="10" height="10" viewBox="0 0 10 10"><line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+            <button type="button" class="cc" data-color="#6366f120" style="background:#6366f1;opacity:0.6"></button>
+            <button type="button" class="cc" data-color="#8b5cf620" style="background:#8b5cf6;opacity:0.6"></button>
+            <button type="button" class="cc" data-color="#ec489920" style="background:#ec4899;opacity:0.6"></button>
+            <button type="button" class="cc" data-color="#f59e0b20" style="background:#f59e0b;opacity:0.6"></button>
+            <button type="button" class="cc" data-color="#10b98120" style="background:#10b981;opacity:0.6"></button>
+            <button type="button" class="cc" data-color="#f8717120" style="background:#f87171;opacity:0.6"></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="mfooter-del" id="deleteCardBtn" style="display:none" onclick="deleteCurrentCard()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Eliminar
+        </button>
+        <div class="mfooter-right">
+          <button class="mbtn-cancel" onclick="closeCardModal()">Cancelar</button>
+          <button class="mbtn-save" id="saveCardBtn" onclick="saveCard()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SHARE -->
+  <div class="modal-overlay" id="shareModal" style="display:none">
+    <div class="share-modal">
+      <div class="modal-header">
+        <h3>Compartir pizarra</h3>
+        <button class="modal-close" onclick="closeShareModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="share-desc">Cualquiera con este link puede ver y editar esta pizarra.</p>
+        <div class="share-box">
+          <span class="share-url" id="shareUrl">colabo.app/b/abc123xyz</span>
+          <button class="copy-share-btn" id="copyShareBtn">Copiar link</button>
+        </div>
+        <div class="share-actions">
+          <button class="share-action-btn">
+            <span>📱</span> WhatsApp
+          </button>
+          <button class="share-action-btn">
+            <span>💬</span> Slack
+          </button>
+          <button class="share-action-btn">
+            <span>📧</span> Email
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTE MODAL -->
+  <div class="modal-overlay" id="noteModal" style="display:none">
+    <div class="note-modal">
+      <div class="modal-header">
+        <h3>Nueva nota</h3>
+        <button class="modal-close" onclick="closeNoteModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea id="noteText" class="minput mtextarea" placeholder="Escribe tu nota aquí…" rows="4"></textarea>
+        <div class="note-colors">
+          <span class="nlabel">Color:</span>
+          <button type="button" class="nc active" data-color="#fef3c7" style="background:#fef3c7"></button>
+          <button type="button" class="nc" data-color="#dbeafe" style="background:#dbeafe"></button>
+          <button type="button" class="nc" data-color="#dcfce7" style="background:#dcfce7"></button>
+          <button type="button" class="nc" data-color="#fce7f3" style="background:#fce7f3"></button>
+          <button type="button" class="nc" data-color="#ede9fe" style="background:#ede9fe"></button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="mfooter-right">
+          <button class="mbtn-cancel" onclick="closeNoteModal()">Cancelar</button>
+          <button class="mbtn-save" onclick="createNote()">Añadir nota</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/drag.js"></script>
+  <script src="../js/notes.js"></script>
+  <script src="../js/board.js"></script>
+</body>
+</html>
