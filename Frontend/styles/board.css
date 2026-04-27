@@ -178,10 +178,12 @@ html, body {
   border-radius: var(--radius-sm);
   padding: 12px; cursor: grab;
   display: flex; flex-direction: column; gap: 8px;
-  transition: all var(--transition);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   animation: cardIn 0.2s ease both;
   position: relative; overflow: hidden;
+  user-select: none;
 }
+.card:active { cursor: grabbing; }
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(6px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
