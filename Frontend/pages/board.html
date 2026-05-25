@@ -7,10 +7,8 @@
   <title>Pizarra — Colabo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="styles/board.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/board.css" />
 </head>
 
 <body>
@@ -38,6 +36,16 @@
       </div>
     </div>
     <div class="header-right">
+      <a href="team-activity.html">
+      <button class="hbtn" id="activityBtn" title="Actividad del equipo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/> </svg>
+        Actividad
+      </button></a>
+      <a href="team-stats.html">
+      <button class="hbtn" id="activityBtn" title="Actividad del equipo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/> </svg>
+        Estadísticas
+      </button></a>
       <button class="hbtn" id="addNoteBtn" title="Añadir nota">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -61,54 +69,20 @@
   </header>
 
   <!-- BOARD -->
-  <div class="board-wrap" id="boardWrap">
-    <div class="board-canvas" id="boardCanvas">
-      <!-- Mock Columns for Frontend Demo -->
-      <div class="column" id="col-todo">
-        <div class="col-header">
-          <span class="col-dot" style="background:#6366f1"></span>
-          <h3 class="col-title">Por hacer</h3>
-          <span class="col-count" id="count-todo">0</span>
-        </div>
-        <div class="col-cards" id="cards-todo" style="min-height: 100px;">
-        </div>
-        <button class="add-card-btn" onclick="openCardModal('cards-todo')">
-          + Añadir tarjeta
-        </button>
-      </div>
-
-      <div class="column" id="col-prog">
-        <div class="col-header">
-          <span class="col-dot" style="background:#f59e0b"></span>
-          <h3 class="col-title">En progreso</h3>
-          <span class="col-count" id="count-prog">0</span>
-        </div>
-        <div class="col-cards" id="cards-prog" style="min-height: 100px;">
-        </div>
-        <button class="add-card-btn" onclick="openCardModal('cards-prog')">
-          + Añadir tarjeta
-        </button>
-      </div>
-
-      <div class="column" id="col-done">
-        <div class="col-header">
-          <span class="col-dot" style="background:#10b981"></span>
-          <h3 class="col-title">Listo</h3>
-          <span class="col-count" id="count-done">0</span>
-        </div>
-        <div class="col-cards" id="cards-done" style="min-height: 100px;">
-        </div>
-        <button class="add-card-btn" onclick="openCardModal('cards-done')">
-          + Añadir tarjeta
-        </button>
-      </div>
-    </div>
+  <div class="board-wrap" id="boardWrap" 
+      style="display: flex; flex-direction: column;"
+    >
     <button class="add-col-btn" id="addColBtn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M5 12h14" stroke-linecap="round" />
       </svg>
       Añadir columna
     </button>
+
+    <div class="board-canvas" id="boardCanvas" style="display: flex; gap:15px;">
+      <!-- Columns injected by board.js -->
+    </div>
+    
   </div>
 
   <!-- FLOATING NOTES LAYER -->
