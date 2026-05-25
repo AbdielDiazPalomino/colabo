@@ -32,7 +32,18 @@ function renderBoards() {
 
 function createBoardCard(board, index) {
   const card = document.createElement('a');
-  card.href = `board.html?id=${board.id}`;
+  const isPrivate = board.password && board.password.length > 0;
+  if (isPrivate) {
+    card.href = '#';
+    card.addEventListener('click', (e) => {
+      // Prevent navigation if click was on a button inside the card
+      if (e.target.closest('.board-actions')) return;
+      e.preventDefault();
+      promptPassword(board.id, board.password);
+    });
+  } else {
+    card.href = `board.html?id=${board.id}`;
+  }
   card.className = 'board-card';
   card.style.animationDelay = `${index * 0.06}s`;
 
@@ -41,9 +52,14 @@ function createBoardCard(board, index) {
     : 0;
 
   const timeAgo = getTimeAgo(board.updatedAt || board.createdAt);
+  
+  let color = board.color || '#6366f1';
+  if (!color.startsWith('#') && color.match(/^[0-9a-fA-F]{3,8}$/)) {
+    color = '#' + color;
+  }
 
   card.innerHTML = `
-    <div class="board-thumb" style="background:${board.color}18">
+    <div class="board-thumb" style="background:${color}18">
       <div class="board-thumb-inner">
         ${(board.columns || []).slice(0, 3).map(col => `
           <div class="mini-col">
@@ -171,3 +187,19 @@ document.addEventListener('DOMContentLoaded', () => {
   seedDemo();
   init();
 });
+
+function promptPassword(id, correctPw) {
+  const userInput = prompt("🔒 Esta pizarra está protegida.\nPor favor, ingresa la contraseña para acceder:");
+  if (userInput === correctPw) {
+    window.location.href = 'board.html?id=' + id;
+  } else if (userInput !== null) {
+    alert("❌ Contraseña incorrecta. Acceso denegado.");
+  }
+}
+
+// Expose functions globally to ensure HTML elements and dynamic templates can access them
+window.openDeleteModal = openDeleteModal;
+window.closeDeleteModal = closeDeleteModal;
+window.confirmDelete = confirmDelete;
+window.copyBoardLink = copyBoardLink;
+window.promptPassword = promptPassword;
