@@ -8,6 +8,7 @@ let currentBoardId = null;
 let currentBoard = null;
 let editingCardId = null;
 let editingCardColId = null;
+let currentCardAttachments = [];
 
 // Tag styles
 const TAG_STYLES = {
@@ -19,6 +20,23 @@ const TAG_STYLES = {
   bug:       { bg: '#f8717120', color: '#f87171' },
   idea:      { bg: '#ec489920', color: '#f472b6' },
 };
+
+function resolveTagStyle(tagName) {
+  if (!tagName) return null;
+  const clean = tagName.toLowerCase().trim();
+  if (TAG_STYLES[clean]) return TAG_STYLES[clean];
+
+  // Hash code generation for dynamic custom tag colors
+  let hash = 0;
+  for (let i = 0; i < clean.length; i++) {
+    hash = clean.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const h = Math.abs(hash) % 360;
+  return {
+    bg: `hsla(${h}, 60%, 55%, 0.15)`,
+    color: `hsl(${h}, 90%, 75%)`
+  };
+}
 
 // ── INIT ──
 function init() {
@@ -79,6 +97,12 @@ function renderBoard() {
   (currentBoard.columns || []).forEach(col => {
     canvas.appendChild(createColEl(col));
   });
+
+  // Re-apply search filter if there is active search query
+  const searchInput = document.getElementById('boardSearchInput');
+  if (searchInput && searchInput.value.trim()) {
+    filterCards(searchInput.value);
+  }
 }
 
 // ── CREATE COLUMN ELEMENT ──
@@ -128,9 +152,9 @@ function createColEl(col) {
 
 // ── CARD HTML ──
 function createCardHTML(card, colId) {
-  const tag = TAG_STYLES[card.tag];
+  const tag = resolveTagStyle(card.tag);
   const tagHTML = tag
-    ? `<span class="card-tag" style="background:${tag.bg};color:${tag.color}">${card.tag}</span>`
+    ? `<span class="card-tag" style="background:${tag.bg};color:${tag.color}">${escapeHtml(card.tag)}</span>`
     : '';
 
   const prioClass = card.priority !== 'none' ? `prio-${card.priority}` : '';
@@ -153,6 +177,48 @@ function createCardHTML(card, colId) {
   const doneOverlay = card.done ? '<div class="card-done-overlay"></div>' : '';
   const accentBar = card.color ? `<div class="card-accent-bar" style="background:${card.color.replace('20','80')}"></div>` : '';
 
+  // Attachments & Cover
+  const attachments = card.attachments || [];
+  const imageAttachment = attachments.find(att => att.type && att.type.startsWith('image/'));
+  const coverHTML = imageAttachment
+    ? `<div class="card-cover-wrap"><img src="${imageAttachment.data}" class="card-cover-img" alt="Cover" /></div>`
+    : '';
+  
+  const attachBadgeHTML = attachments.map(att => {
+    const isImage = att.type && att.type.startsWith('image/');
+    const icon = isImage ? '🖼️' : '📄';
+    const cleanName = att.name.replace(/"/g, '&quot;');
+    return `<span class="card-badge-attach" 
+                  onclick="event.stopPropagation(); downloadAttachmentDirectly('${card.id}', '${att.id}')" 
+                  title="Descargar ${cleanName}">
+              ${icon} ${escapeHtml(att.name.slice(0, 10))}${att.name.length > 10 ? '…' : ''}
+            </span>`;
+  }).join('');
+
+  // Due Date Rendering with Dynamic warning classes
+  let dueDateHTML = '';
+  if (card.dueDate) {
+    const dateObj = new Date(card.dueDate + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffTime = dateObj - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    let dueClass = '';
+    if (card.done || card.progress === 100) {
+      dueClass = 'due-completed';
+    } else if (diffDays < 0) {
+      dueClass = 'due-overdue';
+    } else if (diffDays === 0) {
+      dueClass = 'due-today';
+    } else if (diffDays <= 2) {
+      dueClass = 'due-near';
+    }
+
+    const formattedDate = dateObj.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+    dueDateHTML = `<span class="card-badge-date ${dueClass}" title="Fecha límite: ${card.dueDate}">📅 ${formattedDate}</span>`;
+  }
+
   return `
     <div class="card ${card.done ? 'done' : ''}" 
          data-card-id="${card.id}" 
@@ -160,6 +226,7 @@ function createCardHTML(card, colId) {
          draggable="true"
          ${card.color ? `style="background:${card.color}"` : ''}
          ondblclick="openEditCardModal('${colId}', '${card.id}')">
+      ${coverHTML}
       ${accentBar}
       ${doneOverlay}
       <div class="card-top">
@@ -172,6 +239,8 @@ function createCardHTML(card, colId) {
       ${card.desc ? `<div class="card-desc">${escapeHtml(card.desc.slice(0, 80))}${card.desc.length > 80 ? '…' : ''}</div>` : ''}
       ${progressHTML}
       <div class="card-footer">
+        ${attachBadgeHTML}
+        ${dueDateHTML}
         ${prioHTML}
         ${assigneeHTML}
       </div>
@@ -181,8 +250,10 @@ function createCardHTML(card, colId) {
 
 // ── CARD MODAL ──
 window.openNewCardModal = function (colId) {
+  populateTagsDatalist();
   editingCardId = null;
   editingCardColId = colId;
+  currentCardAttachments = [];
 
   document.getElementById('cardModalTitle').textContent = 'Nueva tarjeta';
   document.getElementById('cardTitle').value = '';
@@ -190,17 +261,23 @@ window.openNewCardModal = function (colId) {
   document.getElementById('cardPriority').value = 'none';
   document.getElementById('cardTag').value = '';
   document.getElementById('cardAssignee').value = '';
+  document.getElementById('cardDueDate').value = '';
   document.getElementById('cardProgress').value = 0;
   document.getElementById('progressVal').textContent = '0%';
   document.getElementById('deleteCardBtn').style.display = 'none';
   document.querySelectorAll('.cc').forEach(b => b.classList.remove('active'));
   document.querySelector('.cc').classList.add('active');
 
+  // Reset file input and list UI
+  document.getElementById('cardFileInput').value = '';
+  renderAttachmentsList();
+
   document.getElementById('cardModal').style.display = 'flex';
   document.getElementById('cardTitle').focus();
 };
 
 window.openEditCardModal = function (colId, cardId) {
+  populateTagsDatalist();
   const col = currentBoard.columns.find(c => c.id === colId);
   if (!col) return;
   const card = col.cards.find(c => c.id === cardId);
@@ -208,6 +285,7 @@ window.openEditCardModal = function (colId, cardId) {
 
   editingCardId = cardId;
   editingCardColId = colId;
+  currentCardAttachments = [...(card.attachments || [])];
 
   document.getElementById('cardModalTitle').textContent = 'Editar tarjeta';
   document.getElementById('cardTitle').value = card.title;
@@ -215,6 +293,7 @@ window.openEditCardModal = function (colId, cardId) {
   document.getElementById('cardPriority').value = card.priority || 'none';
   document.getElementById('cardTag').value = card.tag || '';
   document.getElementById('cardAssignee').value = card.assignee || '';
+  document.getElementById('cardDueDate').value = card.dueDate || '';
   document.getElementById('cardProgress').value = card.progress || 0;
   document.getElementById('progressVal').textContent = (card.progress || 0) + '%';
   document.getElementById('deleteCardBtn').style.display = 'flex';
@@ -223,6 +302,10 @@ window.openEditCardModal = function (colId, cardId) {
   document.querySelectorAll('.cc').forEach(b => {
     b.classList.toggle('active', b.dataset.color === (card.color || ''));
   });
+
+  // Reset file input and render attachments list UI
+  document.getElementById('cardFileInput').value = '';
+  renderAttachmentsList();
 
   document.getElementById('cardModal').style.display = 'flex';
   document.getElementById('cardTitle').focus();
@@ -247,8 +330,13 @@ window.saveCard = function () {
     tag: document.getElementById('cardTag').value,
     assignee: document.getElementById('cardAssignee').value.trim(),
     progress: parseInt(document.getElementById('cardProgress').value) || 0,
-    color: activeCC ? activeCC.dataset.color : ''
+    color: activeCC ? activeCC.dataset.color : '',
+    attachments: currentCardAttachments,
+    dueDate: document.getElementById('cardDueDate').value || null
   };
+
+  // If progress is newly set to 100%, we set done = true
+  cardData.done = cardData.progress === 100;
 
   if (editingCardId) {
     ColaboDB.updateCard(currentBoardId, editingCardColId, editingCardId, cardData);
@@ -258,6 +346,12 @@ window.saveCard = function () {
 
   closeCardModal();
   renderBoard();
+
+  // Trigger celebration!
+  if (cardData.progress === 100 && typeof window.triggerConfetti === 'function') {
+    window.triggerConfetti();
+  }
+
   showToast(editingCardId ? 'Tarjeta actualizada ✓' : 'Tarjeta creada 🎉');
 };
 
@@ -361,9 +455,70 @@ function setupEvents() {
     });
   });
 
+  // Search input events
+  const searchInput = document.getElementById('boardSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      filterCards(searchInput.value);
+    });
+  }
+
   setupAddColumn();
   setupProgressSlider();
   setupCardColors();
+  setupFileUpload();
+}
+
+// ── SEARCH FILTER CARDS ──
+function filterCards(query) {
+  const cleanQuery = query.toLowerCase().trim();
+  const cols = document.querySelectorAll('.col');
+
+  cols.forEach(col => {
+    const colNameEl = col.querySelector('.col-name');
+    const colName = colNameEl ? colNameEl.textContent.toLowerCase() : '';
+    const colNameMatches = cleanQuery && colName.includes(cleanQuery);
+
+    const cards = col.querySelectorAll('.card');
+    let colHasVisibleCard = false;
+
+    cards.forEach(card => {
+      const titleEl = card.querySelector('.card-title');
+      const descEl = card.querySelector('.card-desc');
+      const tagEl = card.querySelector('.card-tag');
+      const prioEl = card.querySelector('.card-priority');
+      const assigneeEl = card.querySelector('.card-avatar');
+      
+      const title = titleEl ? titleEl.textContent.toLowerCase() : '';
+      const desc = descEl ? descEl.textContent.toLowerCase() : '';
+      const tag = tagEl ? tagEl.textContent.toLowerCase() : '';
+      const prio = prioEl ? prioEl.textContent.toLowerCase() : '';
+      const assignee = assigneeEl ? assigneeEl.textContent.toLowerCase() : '';
+
+      const cardMatches = title.includes(cleanQuery) || 
+                          desc.includes(cleanQuery) || 
+                          tag.includes(cleanQuery) || 
+                          prio.includes(cleanQuery) || 
+                          assignee.includes(cleanQuery);
+
+      const isVisible = !cleanQuery || colNameMatches || cardMatches;
+
+      if (isVisible) {
+        card.classList.remove('hidden-by-search');
+        colHasVisibleCard = true;
+      } else {
+        card.classList.add('hidden-by-search');
+      }
+    });
+
+    if (!cleanQuery) {
+      col.classList.remove('hidden-by-search');
+    } else if (colNameMatches || colHasVisibleCard) {
+      col.classList.remove('hidden-by-search');
+    } else {
+      col.classList.add('hidden-by-search');
+    }
+  });
 }
 
 // ── TOAST ──
@@ -379,5 +534,181 @@ function escapeHtml(str) {
   div.textContent = str || '';
   return div.innerHTML;
 }
+
+function populateTagsDatalist() {
+  const datalist = document.getElementById('tagsDatalist');
+  if (!datalist) return;
+  
+  // Default list of suggestions
+  const defaultTags = ["Diseño", "Desarrollo", "Revisión", "Deploy", "Docs", "Bug", "Idea"];
+  const uniqueTags = new Set(defaultTags);
+  
+  // Add all custom tags already used in the board
+  if (currentBoard && currentBoard.columns) {
+    currentBoard.columns.forEach(col => {
+      if (col.cards) {
+        col.cards.forEach(card => {
+          if (card.tag && card.tag.trim()) {
+            // Capitalize / format nicely
+            const t = card.tag.trim();
+            uniqueTags.add(t.charAt(0).toUpperCase() + t.slice(1));
+          }
+        });
+      }
+    });
+  }
+  
+  datalist.innerHTML = '';
+  uniqueTags.forEach(tag => {
+    const opt = document.createElement('option');
+    opt.value = tag;
+    datalist.appendChild(opt);
+  });
+}
+
+// ── ATTACHMENTS MANAGER ──
+function renderAttachmentsList() {
+  const container = document.getElementById('cardAttachmentsList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  currentCardAttachments.forEach(att => {
+    const isImage = att.type && att.type.startsWith('image/');
+    const icon = isImage ? '🖼️' : '📄';
+
+    const item = document.createElement('div');
+    item.className = 'attachment-item';
+    item.innerHTML = `
+      <div class="att-left" onclick="downloadAttachment('${att.id}')">
+        <span class="att-icon">${icon}</span>
+        <span class="att-name" title="${escapeHtml(att.name)}">${escapeHtml(att.name)}</span>
+        <span class="att-size">${formatBytes(att.size)}</span>
+      </div>
+      <button class="att-del" onclick="deleteAttachment('${att.id}')" title="Eliminar archivo">✕</button>
+    `;
+    container.appendChild(item);
+  });
+}
+
+window.deleteAttachment = function (id) {
+  currentCardAttachments = currentCardAttachments.filter(att => att.id !== id);
+  renderAttachmentsList();
+};
+
+window.downloadAttachment = function (id) {
+  const att = currentCardAttachments.find(a => a.id === id);
+  if (!att) return;
+
+  const link = document.createElement('a');
+  link.href = att.data;
+  link.download = att.name;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+function formatBytes(bytes, decimals = 1) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+function setupFileUpload() {
+  const fileInput = document.getElementById('cardFileInput');
+  if (!fileInput) return;
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 1024 * 1024) {
+      alert("El archivo supera el límite de 1MB. Por favor, selecciona un archivo más pequeño o comprímelo.");
+      fileInput.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+      const base64Data = evt.target.result;
+
+      if (file.type.startsWith('image/')) {
+        compressImage(base64Data, 300, 300, (compressedBase64) => {
+          currentCardAttachments.push({
+            id: 'att_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
+            name: file.name,
+            type: file.type,
+            size: Math.round(compressedBase64.length * 0.75),
+            data: compressedBase64
+          });
+          renderAttachmentsList();
+        });
+      } else {
+        currentCardAttachments.push({
+          id: 'att_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: base64Data
+        });
+        renderAttachmentsList();
+      }
+      fileInput.value = '';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function compressImage(base64Str, maxWidth, maxHeight, callback) {
+  const img = new Image();
+  img.src = base64Str;
+  img.onload = function () {
+    let width = img.width;
+    let height = img.height;
+
+    if (width > height) {
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+    } else {
+      if (height > maxHeight) {
+        width = Math.round((width * maxHeight) / height);
+        height = maxHeight;
+      }
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+    callback(dataUrl);
+  };
+}
+
+window.downloadAttachmentDirectly = function (cardId, attId) {
+  if (!currentBoard) return;
+  let card = null;
+  for (let col of currentBoard.columns) {
+    card = col.cards.find(c => c.id === cardId);
+    if (card) break;
+  }
+  if (!card || !card.attachments) return;
+  const att = card.attachments.find(a => a.id === attId);
+  if (!att) return;
+
+  const link = document.createElement('a');
+  link.href = att.data;
+  link.download = att.name;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
 document.addEventListener('DOMContentLoaded', init);
