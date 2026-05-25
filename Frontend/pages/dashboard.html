@@ -90,7 +90,7 @@
       </div>
       <div class="boards-grid" id="boardsGrid">
         <!-- Boards are injected by JS -->
-        <a href="board.html" class="board-card new-card">
+        <a href="new-board.html" class="board-card new-card">
           <div class="new-card-inner">
             <div class="new-icon">+</div>
             <span>Nueva pizarra</span>
@@ -112,83 +112,8 @@
     </div>
   </div>
 
-  <script>
-    function loadBoards() {
-      const grid = document.getElementById('boardsGrid');
-      if (!grid) return;
-
-      let boards = JSON.parse(localStorage.getItem('colabo_boards') || '[]');
-
-      // Conservar siempre la tarjeta de "Nueva pizarra"
-      const newCardHtml = `
-        <a href="new-board.html" class="board-card new-card">
-          <div class="new-card-inner">
-            <div class="new-icon">+</div>
-            <span>Nueva pizarra</span>
-          </div>
-        </a>
-      `;
-      grid.innerHTML = '';
-
-      // Mostrar primero los más recientes
-      boards.slice().reverse().forEach(b => {
-        // Fallbacks por si algún dato está en blanco
-        const color = b.color || '#6366f1';
-        const emoji = b.emoji || '🚀';
-        const name = b.name || 'Pizarra sin nombre';
-        const date = b.date || 'Hoy';
-
-        const isPrivate = b.password && b.password.length > 0;
-        const hrefAction = isPrivate ? '#' : `board.html?id=${b.id}`;
-        const onClickAction = isPrivate ? `onclick="event.preventDefault(); promptPassword('${b.id}', '${b.password}')"` : '';
-        const lockIcon = isPrivate ? `<span style="position:absolute; top:12px; left:12px; background:#fff; border-radius:50%; padding:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1); display:flex; font-size:12px;" title="Privado">🔒</span>` : '';
-
-        const cardHtml = `
-        <a href="${hrefAction}" ${onClickAction} class="board-card board-saved" style="border-top: 4px solid ${color}; position:relative; display:flex; flex-direction:column; justify-content:space-between; text-decoration:none; color:inherit;">
-          ${lockIcon}
-          <div>
-            <div style="font-size: 32px; margin-bottom: 12px; background: ${color}15; width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:12px;">${emoji}</div>
-            <h3 style="margin:0; font-size: 18px; color: #111827; font-weight:600;">${name}</h3>
-            <p style="margin:6px 0 0 0; font-size: 13px; color: #6b7280;">Creado: ${date}</p>
-          </div>
-          <button onclick="deleteBoard(event, '${b.id}')" style="position:absolute; top:12px; right:12px; background:#fee2e2; border:none; cursor:pointer; color:#ef4444; width:30px; height:30px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:14px; transition:all 0.2s;" class="del-btn" title="Eliminar pizarra">🗑️</button>
-        </a>
-        `;
-        grid.insertAdjacentHTML('beforeend', cardHtml);
-      });
-
-      // Estilos CSS inyectados para el hover del botón eliminar
-      if (!document.getElementById('dashHoverStyles')) {
-        document.head.insertAdjacentHTML('beforeend', '<style id="dashHoverStyles">.board-saved:hover .del-btn {display:flex !important;}</style>');
-      }
-
-      grid.insertAdjacentHTML('beforeend', newCardHtml);
-    }
-
-    // Función especial que captura el evento para que no navegue al hacer clic en borrar
-    window.deleteBoard = function (e, id) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (confirm('¿Estás SEGURO que quieres eliminar esta pizarra para siempre?')) {
-        let boards = JSON.parse(localStorage.getItem('colabo_boards') || '[]');
-        boards = boards.filter(b => b.id !== id);
-        localStorage.setItem('colabo_boards', JSON.stringify(boards));
-        loadBoards();
-      }
-    };
-
-    // Función para solicitar contraseña al querer abrir la pizarra
-    window.promptPassword = function (id, correctPw) {
-      const userInput = prompt("🔒 Esta pizarra está protegida.\nPor favor, ingresa la contraseña para acceder:");
-      if (userInput === correctPw) {
-        window.location.href = 'board.html?id=' + id;
-      } else if (userInput !== null) {
-        alert("❌ Contraseña incorrecta. Acceso denegado.");
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', loadBoards);
-  </script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/dashboard.js"></script>
 </body>
 
 </html>
