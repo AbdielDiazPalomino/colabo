@@ -21,6 +21,11 @@
         <span class="board-emoji" id="boardEmoji">🚀</span>
         <h1 class="board-title" id="boardTitle" contenteditable="true" spellcheck="false">Mi Pizarra</h1>
       </div>
+      <!-- SEARCH BAR -->
+      <div class="header-search-wrap">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="boardSearchInput" placeholder="Buscar tareas..." spellcheck="false" autocomplete="off" />
+      </div>
     </div>
     <div class="header-center">
       <!-- Online avatars -->
@@ -104,27 +109,44 @@
           </div>
           <div class="mfield">
             <label class="mlabel">Etiqueta</label>
-            <select id="cardTag" class="minput mselect">
-              <option value="">Sin etiqueta</option>
-              <option value="diseño">Diseño</option>
-              <option value="dev">Desarrollo</option>
-              <option value="revisión">Revisión</option>
-              <option value="deploy">Deploy</option>
-              <option value="docs">Docs</option>
-              <option value="bug">Bug</option>
-              <option value="idea">Idea</option>
-            </select>
+            <input type="text" id="cardTag" class="minput" placeholder="Escribe o elige..." list="tagsDatalist" autocomplete="off" />
+            <datalist id="tagsDatalist">
+              <option value="Diseño"></option>
+              <option value="Desarrollo"></option>
+              <option value="Revisión"></option>
+              <option value="Deploy"></option>
+              <option value="Docs"></option>
+              <option value="Bug"></option>
+              <option value="Idea"></option>
+            </datalist>
           </div>
         </div>
-        <div class="mfield">
-          <label class="mlabel">Asignado a</label>
-          <input type="text" id="cardAssignee" class="minput" placeholder="Nombre o iniciales" maxlength="20" />
+        <div class="mfield-row">
+          <div class="mfield">
+            <label class="mlabel">Asignado a</label>
+            <input type="text" id="cardAssignee" class="minput" placeholder="Nombre o iniciales" maxlength="20" />
+          </div>
+          <div class="mfield">
+            <label class="mlabel">Fecha Límite</label>
+            <input type="date" id="cardDueDate" class="minput" style="color-scheme: dark;" />
+          </div>
         </div>
         <div class="mfield">
           <label class="mlabel">Progreso</label>
           <div class="progress-wrap">
             <input type="range" id="cardProgress" min="0" max="100" value="0" class="progress-slider" />
             <span id="progressVal">0%</span>
+          </div>
+        </div>
+        <div class="mfield">
+          <label class="mlabel">Archivos y Avance (Máx 1MB)</label>
+          <div class="attachments-area" style="display: flex; flex-direction: column; gap: 8px;">
+            <div id="cardAttachmentsList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+            <label class="btn-attach" for="cardFileInput" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--surface); border: 1px dashed var(--border); color: var(--text-2); font-size: 0.8rem; cursor: pointer; text-align: center; justify-content: center; transition: all var(--transition);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              <span>Adjuntar captura o documento</span>
+            </label>
+            <input type="file" id="cardFileInput" style="display: none;" />
           </div>
         </div>
         <div class="mfield">
@@ -220,6 +242,8 @@
   <script src="../js/storage.js"></script>
   <script src="../js/drag.js"></script>
   <script src="../js/notes.js"></script>
+  <script src="../js/confetti.js"></script>
+  <script src="../js/music.js"></script>
   <script src="../js/board.js"></script>
 </body>
 </html>

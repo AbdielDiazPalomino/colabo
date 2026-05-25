@@ -831,3 +831,14 @@ body {
         min-width: 800px;
     }
 }
+
+/* ── PRIORITY COLORS FOR WEEK AND DAY VIEWS ── */
+.week-task.urgent, .day-task-item.urgent { border-left-color: var(--urgent) !important; }
+.week-task.high, .day-task-item.high { border-left-color: var(--high) !important; }
+.week-task.med, .day-task-item.med { border-left-color: var(--med) !important; }
+.week-task.low, .day-task-item.low { border-left-color: var(--low) !important; }
+.week-task.completed, .day-task-item.completed {
+  opacity: 0.5 !important;
+  text-decoration: line-through !important;
+  border-left-color: var(--completed) !important;
+}

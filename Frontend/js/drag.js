@@ -126,7 +126,24 @@ const DragManager = (() => {
         const boardId = ColaboDB.getCurrentBoardId();
         if (!boardId) return;
 
+        const colNameEl = col.querySelector('.col-name');
+        const colName = colNameEl ? colNameEl.textContent.trim().toLowerCase() : '';
+        const hasMovedCol = draggedColId !== toColId;
+        const isDoneCol = colName.includes('listo') || colName.includes('done') || colName.includes('complet');
+
         ColaboDB.moveCard(boardId, draggedColId, toColId, draggedCardId, toIndex);
+
+        if (hasMovedCol) {
+            if (isDoneCol) {
+                ColaboDB.updateCard(boardId, toColId, draggedCardId, { done: true, progress: 100 });
+                if (typeof window.triggerConfetti === 'function') {
+                    window.triggerConfetti();
+                }
+            } else {
+                ColaboDB.updateCard(boardId, toColId, draggedCardId, { done: false });
+            }
+        }
+
         document.dispatchEvent(new CustomEvent('board:refresh'));
     }
 

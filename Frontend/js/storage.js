@@ -107,6 +107,8 @@ const ColaboDB = {
       assignee: cardData.assignee || '',
       progress: cardData.progress || 0,
       color: cardData.color || '',
+      attachments: cardData.attachments || [],
+      dueDate: cardData.dueDate || null,
       done: false,
       createdAt: Date.now()
     };
