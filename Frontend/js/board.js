@@ -8,6 +8,7 @@ let currentBoardId = null;
 let currentBoard = null;
 let editingCardId = null;
 let editingCardColId = null;
+let boardSocket = null;
 let currentCardAttachments = [];
 
 // Tag styles
@@ -39,12 +40,11 @@ function resolveTagStyle(tagName) {
 }
 
 // ── INIT ──
-function init() {
+async function init() {
   currentBoardId = ColaboDB.getCurrentBoardId();
 
   if (!currentBoardId) {
-    // No board ID — use first available or redirect
-    const boards = ColaboDB.getBoards();
+    const boards = await ColaboDB.getBoards();
     if (boards.length > 0) {
       window.location.href = `board.html?id=${boards[0].id}`;
     } else {
@@ -53,7 +53,7 @@ function init() {
     return;
   }
 
-  currentBoard = ColaboDB.getBoardById(currentBoardId);
+  currentBoard = await ColaboDB.getBoardById(currentBoardId);
   if (!currentBoard) {
     window.location.href = 'dashboard.html';
     return;
@@ -66,6 +66,19 @@ function init() {
   DragManager.init();
   NotesManager.render(currentBoard.notes, currentBoardId);
   NotesManager.setupModal();
+
+  // 🔴 CONEXIÓN WEBSOCKET PARA TIEMPO REAL
+  boardSocket = new WebSocket(`ws://localhost:8000/ws/board/${currentBoardId}/`);
+  
+  boardSocket.onmessage = async function(e) {
+    const data = JSON.parse(e.data);
+    if (data.action === 'refresh') {
+      // Si alguien más hace un cambio, recargamos la pizarra
+      currentBoard = await ColaboDB.getBoardById(currentBoardId);
+      renderBoard();
+      NotesManager.render(currentBoard.notes, currentBoardId);
+    }
+  };
 }
 
 // ── HEADER ──
@@ -77,21 +90,28 @@ function renderHeader() {
 
   // Editable title
   const titleEl = document.getElementById('boardTitle');
-  titleEl.addEventListener('blur', () => {
-    const newName = titleEl.textContent.trim();
+  const newTitleEl = titleEl.cloneNode(true); // Limpiar eventos anteriores
+  titleEl.parentNode.replaceChild(newTitleEl, titleEl);
+
+  newTitleEl.addEventListener('blur', async () => {
+    const newName = newTitleEl.textContent.trim();
     if (newName && newName !== currentBoard.name) {
-      ColaboDB.updateBoard(currentBoardId, { name: newName });
+      await ColaboDB.updateBoard(currentBoardId, { name: newName });
       currentBoard.name = newName;
+      if (typeof notifyBoardUpdate === 'function') notifyBoardUpdate();
     }
   });
-  titleEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); titleEl.blur(); }
+  newTitleEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); newTitleEl.blur(); }
   });
 }
 
 // ── RENDER BOARD ──
-function renderBoard() {
-  currentBoard = ColaboDB.getBoardById(currentBoardId);
+async function renderBoard() {
+  currentBoard = await ColaboDB.getBoardById(currentBoardId);
+
+  console.log("Respuesta de Django (currentBoard):", currentBoard);
+
   const canvas = document.getElementById('boardCanvas');
   canvas.innerHTML = '';
   (currentBoard.columns || []).forEach(col => {
@@ -139,9 +159,13 @@ function createColEl(col) {
 
   // Editable col name
   const nameEl = el.querySelector('.col-name');
-  nameEl.addEventListener('blur', () => {
+  nameEl.addEventListener('blur', async () => {
     const newName = nameEl.textContent.trim();
-    if (newName) ColaboDB.updateColumn(currentBoardId, col.id, { name: newName });
+    if (newName && newName !== col.name) {
+      await ColaboDB.updateColumn(currentBoardId, col.id, { name: newName });
+      col.name = newName; // Actualizamos localmente
+      if (typeof notifyBoardUpdate === 'function') notifyBoardUpdate();
+    }
   });
   nameEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); nameEl.blur(); }
@@ -315,7 +339,7 @@ window.closeCardModal = function () {
   document.getElementById('cardModal').style.display = 'none';
 };
 
-window.saveCard = function () {
+window.saveCard = async function () {
   const title = document.getElementById('cardTitle').value.trim();
   if (!title) {
     document.getElementById('cardTitle').focus();
@@ -331,23 +355,24 @@ window.saveCard = function () {
     assignee: document.getElementById('cardAssignee').value.trim(),
     progress: parseInt(document.getElementById('cardProgress').value) || 0,
     color: activeCC ? activeCC.dataset.color : '',
-    attachments: currentCardAttachments,
     dueDate: document.getElementById('cardDueDate').value || null
   };
 
-  // If progress is newly set to 100%, we set done = true
   cardData.done = cardData.progress === 100;
 
   if (editingCardId) {
-    ColaboDB.updateCard(currentBoardId, editingCardColId, editingCardId, cardData);
+    await ColaboDB.updateCard(currentBoardId, editingCardColId, editingCardId, cardData);
   } else {
-    ColaboDB.addCard(currentBoardId, editingCardColId, cardData);
+    await ColaboDB.addCard(currentBoardId, editingCardColId, cardData);
   }
 
   closeCardModal();
+  
+  // Refrescar localmente y avisar a los demás
+  currentBoard = await ColaboDB.getBoardById(currentBoardId);
   renderBoard();
+  notifyBoardUpdate(); 
 
-  // Trigger celebration!
   if (cardData.progress === 100 && typeof window.triggerConfetti === 'function') {
     window.triggerConfetti();
   }
@@ -355,28 +380,63 @@ window.saveCard = function () {
   showToast(editingCardId ? 'Tarjeta actualizada ✓' : 'Tarjeta creada 🎉');
 };
 
-window.deleteCurrentCard = function () {
+window.deleteCurrentCard = async function () {
   if (!editingCardId || !editingCardColId) return;
-  ColaboDB.deleteCard(currentBoardId, editingCardColId, editingCardId);
+  await ColaboDB.deleteCard(currentBoardId, editingCardColId, editingCardId);
   closeCardModal();
+  currentBoard = await ColaboDB.getBoardById(currentBoardId);
   renderBoard();
+  notifyBoardUpdate();
   showToast('Tarjeta eliminada');
 };
 
+// Función helper para avisar al WebSocket
+function notifyBoardUpdate() {
+  if (boardSocket && boardSocket.readyState === WebSocket.OPEN) {
+    boardSocket.send(JSON.stringify({
+      action: 'refresh',
+      data: {}
+    }));
+  }
+}
+
 // ── COLUMN ACTIONS ──
-window.deleteColumn = function (colId) {
+window.deleteColumn = async function (colId) {
   if (!confirm('¿Eliminar esta columna y todas sus tarjetas?')) return;
-  ColaboDB.deleteColumn(currentBoardId, colId);
+  
+  // Borramos en Django
+  await ColaboDB.deleteColumn(currentBoardId, colId);
+  
+  // Actualizamos visualmente
+  currentBoard = await ColaboDB.getBoardById(currentBoardId);
   renderBoard();
+  
+  if (typeof notifyBoardUpdate === 'function') notifyBoardUpdate();
 };
 
 // ── ADD COLUMN ──
 function setupAddColumn() {
-  document.getElementById('addColBtn').addEventListener('click', () => {
+  const btn = document.getElementById('addColBtn');
+  
+  // Clonamos el botón para limpiar listeners viejos y evitar que se dupliquen eventos
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+
+  newBtn.addEventListener('click', async () => {
     const name = prompt('Nombre de la columna:');
     if (!name || !name.trim()) return;
-    ColaboDB.addColumn(currentBoardId, name.trim());
+    
+    // 1. Enviamos a Django
+    await ColaboDB.addColumn(currentBoardId, name.trim());
+    
+    // 2. Pedimos los datos actualizados a Django
+    currentBoard = await ColaboDB.getBoardById(currentBoardId);
+    
+    // 3. Pintamos la pizarra
     renderBoard();
+    
+    // 4. Avisamos a los demás conectados (si el socket está activo)
+    if (typeof notifyBoardUpdate === 'function') notifyBoardUpdate();
   });
 }
 

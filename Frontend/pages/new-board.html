@@ -7,7 +7,9 @@
   <title>Nueva Pizarra — Colabo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="../styles/new-board.css" />
 </head>
 
@@ -150,7 +152,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-create" id="createBtn">
+          <button type="button" class="btn-create" id="createBtn">
             <span>Crear pizarra</span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
@@ -186,117 +188,10 @@
     </div>
   </div>
 
-  <script>
-    // Lógica para que funcionen los botones de colores, emojis y opciones
-    document.querySelectorAll('.color-opt').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.color-opt').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        document.getElementById('colorName').innerText = e.currentTarget.getAttribute('data-name');
-        document.getElementById('previewCard').style.borderTop = "4px solid " + e.currentTarget.getAttribute('data-color');
-      });
-    });
+  <script src="../js/storage.js"></script>
+  <script src="../js/new-board.js"></script>
 
-    document.querySelectorAll('.emoji-opt').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.emoji-opt').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-      });
-    });
 
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-      });
-    });
-
-    const nameInput = document.getElementById('boardName');
-    nameInput.addEventListener('input', (e) => {
-      document.getElementById('nameCount').innerText = e.target.value.length;
-      document.getElementById('previewName').innerText = e.target.value || 'Mi nueva pizarra';
-    });
-
-    // Lógica Privacidad / Contraseña
-    const btnPublic = document.getElementById('accessPublic');
-    const btnPrivate = document.getElementById('accessPrivate');
-    const pwField = document.getElementById('passwordField');
-    const pwInput = document.getElementById('boardPassword');
-    const pwToggle = document.getElementById('pwToggle');
-
-    btnPublic.addEventListener('click', () => {
-      btnPublic.classList.add('active');
-      btnPrivate.classList.remove('active');
-      pwField.style.display = 'none';
-      pwInput.value = '';
-    });
-
-    btnPrivate.addEventListener('click', () => {
-      btnPrivate.classList.add('active');
-      btnPublic.classList.remove('active');
-      pwField.style.display = 'block';
-      setTimeout(() => pwInput.focus(), 50);
-    });
-
-    pwToggle.addEventListener('click', () => {
-      if (pwInput.type === 'password') {
-        pwInput.type = 'text';
-      } else {
-        pwInput.type = 'password';
-      }
-    });
-
-    // Lógica principal de guardado
-    document.getElementById('newBoardForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const name = document.getElementById('boardName').value.trim() || 'Mi nueva pizarra';
-      const colorBtn = document.querySelector('.color-opt.active');
-      const color = colorBtn ? colorBtn.getAttribute('data-color') : '#6366f1';
-
-      const emojiBtn = document.querySelector('.emoji-opt.active');
-      const emoji = emojiBtn ? emojiBtn.getAttribute('data-emoji') : '🚀';
-
-      const colsBtn = document.querySelector('.preset-btn.active');
-      const colsStr = colsBtn ? colsBtn.getAttribute('data-cols') : '["Por hacer","En progreso","Listo"]';
-
-      const isPrivate = document.getElementById('accessPrivate').classList.contains('active');
-      const password = isPrivate ? document.getElementById('boardPassword').value : '';
-
-      // Crear base de la pizarra
-      const newBoard = {
-        id: 'board_' + Date.now(),
-        name: name,
-        color: color,
-        emoji: emoji,
-        cols: JSON.parse(colsStr),
-        date: new Date().toLocaleDateString()
-      };
-
-      // Guardar en LocalStorage
-      let boards = JSON.parse(localStorage.getItem('colabo_boards') || '[]');
-      boards.push(newBoard);
-      localStorage.setItem('colabo_boards', JSON.stringify(boards));
-
-      // Mostrar éxito
-      const successOverlay = document.getElementById('successOverlay');
-      if (successOverlay) {
-        successOverlay.style.display = 'flex';
-        document.getElementById('shareLink').innerText = 'colabo.app/b/' + newBoard.id.substring(6);
-      } else {
-        window.location.href = 'dashboard.html';
-      }
-    });
-
-    document.getElementById('goToBoardBtn').addEventListener('click', function () {
-      // Redirigir siempre al dashboard o a la pizarra si tuviéramos lógica de ID allí
-      window.location.href = 'dashboard.html';
-    });
-
-    function copyLink() {
-      alert("¡Enlace copiado al portapapeles! Ahora puedes enviarlo por WhatsApp o correo.");
-    }
-  </script>
 </body>
 
 </html>

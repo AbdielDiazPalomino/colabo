@@ -19,7 +19,7 @@ const PRIORITY_LABELS = {
   urgent: 'Urgente'
 };
 
-function initCalendar() {
+async function initCalendar() {
   // 1. Load active Board
   const recent = ColaboDB.getRecentBoards();
   currentBoardId = recent.length > 0 ? recent[0].id : null;

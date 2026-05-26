@@ -5,13 +5,14 @@
 
 let boardToDelete = null;
 
-function init() {
+async function init() {
+  await seedDemo();
   renderBoards();
 }
 
-function renderBoards() {
+async function renderBoards() {
   const grid = document.getElementById('boardsGrid');
-  const boards = ColaboDB.getBoards();
+  const boards = await ColaboDB.getBoards();
 
   // Remove existing board cards (keep the "new" card)
   grid.querySelectorAll('.board-card:not(.new-card)').forEach(el => el.remove());
@@ -154,10 +155,12 @@ function getTimeAgo(ts) {
 }
 
 // Seed demo data if empty
-function seedDemo() {
-  if (ColaboDB.getBoards().length > 0) return;
+async function seedDemo() {
+  const boards = await ColaboDB.getBoards();
+  if (boards && boards.length > 0) return;
+  console.log("Creando pizarra de demostración...");
 
-  ColaboDB.createBoard({
+  const b1 = await ColaboDB.createBoard({
     name: 'Sprint de diseño',
     color: '#6366f1',
     emoji: '🎨',
@@ -165,16 +168,14 @@ function seedDemo() {
     password: null
   });
 
-  const boards = ColaboDB.getBoards();
-  if (boards[0]) {
-    const board = boards[0];
-    ColaboDB.addCard(board.id, board.columns[0].id, { title: 'Wireframes pantalla principal', priority: 'high', tag: 'diseño', assignee: 'JR', progress: 0 });
-    ColaboDB.addCard(board.id, board.columns[0].id, { title: 'Revisar paleta de colores', priority: 'med', tag: 'revisión', assignee: 'AM', progress: 0 });
-    ColaboDB.addCard(board.id, board.columns[1].id, { title: 'Sistema de tipografía', priority: 'high', tag: 'diseño', assignee: 'CS', progress: 60 });
-    ColaboDB.addCard(board.id, board.columns[2].id, { title: 'Logo e identidad visual', priority: 'low', tag: 'diseño', assignee: 'JR', progress: 100 });
+  if (b1 && b1.columns && b1.columns.length >= 3) {
+    await ColaboDB.addCard(b1.id, b1.columns[0].id, { title: 'Wireframes pantalla principal', priority: 'high', tag: 'diseño', assignee: 'JR', progress: 0 });
+    await ColaboDB.addCard(b1.id, b1.columns[0].id, { title: 'Revisar paleta de colores', priority: 'med', tag: 'revisión', assignee: 'AM', progress: 0 });
+    await ColaboDB.addCard(b1.id, b1.columns[1].id, { title: 'Sistema de tipografía', priority: 'high', tag: 'diseño', assignee: 'CS', progress: 60 });
+    await ColaboDB.addCard(b1.id, b1.columns[2].id, { title: 'Logo e identidad visual', priority: 'low', tag: 'diseño', assignee: 'JR', progress: 100 });
   }
 
-  ColaboDB.createBoard({
+  await ColaboDB.createBoard({
     name: 'Proyecto Alpha',
     color: '#10b981',
     emoji: '🚀',
@@ -184,7 +185,7 @@ function seedDemo() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  seedDemo();
+  
   init();
 });
 

@@ -11,7 +11,7 @@ class ColumnSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Column
-        fields = ['id', 'name', 'color', 'order', 'cards']
+        fields = ['id', 'board', 'name', 'color', 'order', 'cards']
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:

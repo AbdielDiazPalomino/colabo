@@ -103,7 +103,8 @@ window.deleteNoteEl = function (btn, boardId, noteId) {
   if (boardId) ColaboDB.deleteNote(boardId, noteId);
 };
 
-window.createNote = function () {
+window.createNote = async function () {
+  console.log("¡Click detectado en crear nota!");
   const text = document.getElementById('noteText').value.trim();
   if (!text) return;
 
@@ -115,9 +116,15 @@ window.createNote = function () {
   const x = 100 + Math.random() * (layerRect.width - 300);
   const y = 80 + Math.random() * (layerRect.height - 200);
 
-  const note = boardId
-    ? ColaboDB.addNote(boardId, { text, color: selectedNoteColor, x, y })
-    : { id: 'tmp_' + Date.now(), text, color: selectedNoteColor, x, y };
+  let note;
+  if (boardId) {
+      note = await ColaboDB.addNote(boardId, { text, color: selectedNoteColor, x, y });
+      
+  } else {
+      note = { id: 'tmp_' + Date.now(), text, color: selectedNoteColor, x, y };
+  }
+
+  console.log("DEBUG: Objeto nota recibido:", note);
 
   const el = createNoteEl(note, boardId);
   el.style.opacity = '0';

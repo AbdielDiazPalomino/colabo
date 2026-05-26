@@ -99,9 +99,9 @@ function setupPasswordToggle() {
 }
 
 function setupForm() {
-  const form = document.getElementById('newBoardForm');
+  const createBtn = document.getElementById('createBtn');
 
-  form.addEventListener('submit', (e) => {
+  createBtn.addEventListener('click', async (e) => {
     e.preventDefault();
     const name = document.getElementById('boardName').value.trim();
     const password = isPrivate ? document.getElementById('boardPassword').value.trim() : null;
@@ -114,17 +114,32 @@ function setupForm() {
       return;
     }
 
-    // Create board
-    const board = ColaboDB.createBoard({
-      name,
-      color: selectedColor,
-      emoji: selectedEmoji,
-      columns: selectedCols,
-      password
-    });
+    const originalText = createBtn.innerHTML;
+    createBtn.innerHTML = '<span>Creando...</span>';
+    createBtn.disabled = true;
 
-    createdBoardId = board.id;
-    showSuccess(board);
+    // Create board
+    try {
+      // Llamada asíncrona a Django
+      const board = await ColaboDB.createBoard({
+        name,
+        color: selectedColor,
+        emoji: selectedEmoji,
+        columns: selectedCols,
+        password
+      });
+
+      createdBoardId = board.id;
+      showSuccess(board);
+      
+    } catch (error) {
+      console.error("Error al crear la pizarra:", error);
+      alert("Error de conexión con el backend.");
+    } finally {
+      // Restaurar el botón a su estado original
+      createBtn.innerHTML = originalText;
+      createBtn.disabled = false;
+    }
   });
 }
 

@@ -31,13 +31,13 @@ function resolveTagStyle(tagName) {
   };
 }
 
-function initStats() {
+async function initStats() {
   // Determine active board ID
   const recent = ColaboDB.getRecentBoards();
   let boardId = recent.length > 0 ? recent[0].id : null;
   
   if (!boardId) {
-    const boards = ColaboDB.getBoards();
+    const boards = await ColaboDB.getBoards();
     if (boards.length > 0) {
       boardId = boards[0].id;
     }
@@ -48,7 +48,7 @@ function initStats() {
     return;
   }
 
-  const board = ColaboDB.getBoardById(boardId);
+  const board = await ColaboDB.getBoardById(boardId);
   if (!board) {
     console.warn("Selected board not found.");
     return;

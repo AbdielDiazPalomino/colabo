@@ -106,7 +106,7 @@ const DragManager = (() => {
         }
     }
 
-    function onDrop(e) {
+    async function onDrop(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -131,20 +131,34 @@ const DragManager = (() => {
         const hasMovedCol = draggedColId !== toColId;
         const isDoneCol = colName.includes('listo') || colName.includes('done') || colName.includes('complet');
 
-        ColaboDB.moveCard(boardId, draggedColId, toColId, draggedCardId, toIndex);
+        // Optimistic UI: lo movemos visualmente de inmediato
+        if (!afterCard) {
+            container.appendChild(draggedCard);
+        } else {
+            container.insertBefore(draggedCard, afterCard);
+        }
+
+        // Llamada asíncrona a la API
+        await ColaboDB.moveCard(boardId, draggedColId, toColId, draggedCardId, toIndex);
 
         if (hasMovedCol) {
             if (isDoneCol) {
-                ColaboDB.updateCard(boardId, toColId, draggedCardId, { done: true, progress: 100 });
+                await ColaboDB.updateCard(boardId, toColId, draggedCardId, { done: true, progress: 100 });
                 if (typeof window.triggerConfetti === 'function') {
                     window.triggerConfetti();
                 }
             } else {
-                ColaboDB.updateCard(boardId, toColId, draggedCardId, { done: false });
+                await ColaboDB.updateCard(boardId, toColId, draggedCardId, { done: false });
             }
         }
 
+        // Refrescar datos internos
         document.dispatchEvent(new CustomEvent('board:refresh'));
+        
+        // Si tienes el socket disponible globalmente, avisa a los demás:
+        if (window.boardSocket && window.boardSocket.readyState === WebSocket.OPEN) {
+            window.boardSocket.send(JSON.stringify({ action: 'refresh', data: {} }));
+        }
     }
 
     function getDragAfterElement(container, y) {
