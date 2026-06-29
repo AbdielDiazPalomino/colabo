@@ -1,0 +1,40 @@
+name: Deploy Django to Azure
+
+on:
+  push:
+    branches:
+      - main   # o "master" según tu rama principal
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: Backend/colabo
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Collect static files
+        working-directory: Backend/colabo
+        run: |
+          python manage.py collectstatic --noinput
+        env:
+          DJANGO_SETTINGS_MODULE: colabo.settings
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'MiAplicacionSpring'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: Backend/colabo
+          startup-command: 'daphne -b 0.0.0.0 -p 8000 colabo.asgi:application'
