@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-htz#=&8-(7h!n0%4=ql5i4=#0$jzm76eye_dc62^-@o7-(6%7x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['colabo-app-22303840.azurewebsites.net']
 
 
 # Application definition
